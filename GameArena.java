@@ -28,7 +28,6 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 
 	/**
 	 * Create a view of a GameArena.
-	 * The GameArena will be created with the default size of 300x300 pixels.
 	 * 
 	 * @param width The width of the playing area, in pixels.
 	 * @param height The height of the playing area, in pixels.

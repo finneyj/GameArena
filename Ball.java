@@ -20,6 +20,13 @@ public class Ball
 										// GREEN, LIGHTGREY, MAGENTA, ORANGE,
 										// PINK, RED, WHITE, YELLOW 
 
+	/**
+	 * Constructor. Creates a Ball with the given parameters.
+	 * @param x The x co-ordinate of centre of the Ball (in pixels)
+	 * @param y The y co-ordinate of centre of the Ball (in pixels)
+	 * @param diameter The diameter of the Ball (in pixels)
+	 * @param col The colour of the Ball (Permissable colours are: BLACK, BLUE, CYAN, DARKGREY, GREY, GREEN, LIGHTGREY, MAGENTA, ORANGE, PINK, RED, WHITE, YELLOW)
+	 */
 	public Ball(double x, double y, double diameter, String col)
 	{
 		xPosition = x;
