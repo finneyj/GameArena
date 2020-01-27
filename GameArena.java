@@ -3,9 +3,6 @@ import java.awt.*;
 import java.awt.image.*;
 import java.awt.event.*;
 import java.util.*;
-import java.awt.geom.AffineTransform;
-import java.lang.reflect.Field;
-
 
 /**
  * This class provides a simple window in which grahical objects can be drawn. 
@@ -17,8 +14,7 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 	private int arenaWidth;
 	private int arenaHeight;
 
-	private boolean exiting = false;
-    private boolean retina = false;
+	private boolean exiting = false; 
 
 	private ArrayList<Ball> balls = new ArrayList<Ball>();
 	private ArrayList<Rectangle> rectangles = new ArrayList<Rectangle>();
@@ -33,7 +29,9 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 	/**
 	 * Create a view of a GameArena.
 	 * The GameArena will be created with the default size of 300x300 pixels.
-	 *
+	 * 
+	 * @param width The width of the playing area, in pixels.
+	 * @param height The height of the playing area, in pixels.
 	 */
 	public GameArena(int width, int height)
 	{

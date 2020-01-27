@@ -75,7 +75,7 @@ public class Ball
 	
 	/**
 	 * Sets the diameter of this Ball to the given size.
-	 * @param the new diameter of this Ball, in pixels.
+	 * @param s the new diameter of this Ball, in pixels.
 	 */
 	public void setSize(double s)
 	{
@@ -93,8 +93,7 @@ public class Ball
 
 	/**
 	 * Sets the colour of this Ball.
-	 * @param the new colour of this Ball, as a String value. Permissable colours are: BLACK, BLUE, CYAN, DARKGREY, GREY, GREEN, LIGHTGREY, MAGENTA, ORANGE, PINK, RED, WHITE, YELLOW.
-	 * @see Ball()
+	 * @param c the new colour of this Ball, as a String value. Permissable colours are: BLACK, BLUE, CYAN, DARKGREY, GREY, GREEN, LIGHTGREY, MAGENTA, ORANGE, PINK, RED, WHITE, YELLOW.
 	 */
 	public void setColour(String c)
 	{
