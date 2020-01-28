@@ -25,6 +25,7 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 	private boolean right = false;
 	private boolean space = false;
 
+	private boolean rendered = false;
 
 	/**
 	 * Create a view of a GameArena.
@@ -35,11 +36,11 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 	public GameArena(int width, int height)
 	{
 		this.setTitle("Let's Play!");
-		this.setVisible(true);		
 		this.setSize(width, height);
 		this.setResizable(false);
 		this.setBackground(Color.BLACK);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setVisible(true);		
 	
 		Thread t = new Thread(this);
 		t.start();
@@ -84,6 +85,12 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 	 */
 	public void paint (Graphics gr)
 	{
+		if (!rendered)
+		{
+			this.setSize(arenaWidth, arenaHeight);
+			rendered = true;
+		}
+
 		Graphics2D window = (Graphics2D) gr;
 		BufferedImage i = new BufferedImage(arenaWidth, arenaHeight, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = i.createGraphics();
