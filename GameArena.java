@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.image.*;
 import java.awt.event.*;
 import java.util.*;
+import java.util.List;
 
 /**
  * This class provides a simple window in which grahical objects can be drawn. 
