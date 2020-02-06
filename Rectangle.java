@@ -30,13 +30,13 @@ public class Rectangle
 	 * @param h The height of the Rectangle (in pixels)
 	 * @param col The colour of the Rectangle (Permissable colours are: BLACK, BLUE, CYAN, DARKGREY, GREY, GREEN, LIGHTGREY, MAGENTA, ORANGE, PINK, RED, WHITE, YELLOW)
 	 */
-	public Rectangle(double x, double y, double w, double h, String col)
+	public Rectangle(double xPosition, double yPosition, double width, double height, String colour)
 	{
-		xPosition = x;
-		yPosition = y;
-		width = w;
-		height = h;
-		colour = col;
+		this.xPosition = xPosition;
+		this.yPosition = yPosition;
+		this.width = width;
+		this.height = height;
+		this.colour = colour;
 	}	
 									
 
@@ -46,7 +46,7 @@ public class Rectangle
 	 */
 	public double getXPosition()
 	{
-		return xPosition;
+		return this.xPosition;
 	}
 
 	/**
@@ -55,25 +55,25 @@ public class Rectangle
 	 */
 	public double getYPosition()
 	{
-		return yPosition;
+		return this.yPosition;
 	}
 
 	/**
 	 * Moves the current position of this Rectangle to the given X co-ordinate
 	 * @param x the new x co-ordinate of this Rectangle
 	 */
-	public void setXPosition(double x)
+	public void setXPosition(double xPosition)
 	{
-		this.xPosition = x;
+		this.xPosition = xPosition;
 	}
 
 	/**
 	 * Moves the current position of this Rectangle to the given Y co-ordinate
 	 * @param y the new y co-ordinate of this Rectangle
 	 */
-	public void setYPosition(double y)
+	public void setYPosition(double yPosition)
 	{
-		this.yPosition = y;
+		this.yPosition = yPosition;
 	}
 
 	/**
@@ -82,16 +82,16 @@ public class Rectangle
 	 */
 	public double getWidth()
 	{
-		return width;
+		return this.width;
 	}
 
 	/**
 	 * Sets the width of this Rectangle to the given value
 	 * @param w the new width of this Rectangle, in pixels.
 	 */
-	public void setWidth(double w)
+	public void setWidth(double width)
 	{
-		width = w;
+		this.width = width;
 	}
 
 	/**
@@ -100,16 +100,16 @@ public class Rectangle
 	 */
 	public double getHeight()
 	{
-		return height;
+		return this.height;
 	}
 
 	/**
 	 * Sets the height of this Rectangle to the given value
 	 * @param h the new height of this Rectangle, in pixels.
 	 */
-	public void setHeight(double h)
+	public void setHeight(double height)
 	{
-		height = h;
+		this.height = height;
 	}
 
 	/**
@@ -118,15 +118,15 @@ public class Rectangle
 	 */
 	public String getColour()
 	{
-		return colour;
+		return this.colour;
 	}
 
 	/**
 	 * Sets the colour of this Rectangle.
 	 * @param c the new colour of this Rectangle, as a String value. Permissable colours are: BLACK, BLUE, CYAN, DARKGREY, GREY, GREEN, LIGHTGREY, MAGENTA, ORANGE, PINK, RED, WHITE, YELLOW.
 	 */
-	public void setColour(String c)
+	public void setColour(String colour)
 	{
-		colour = c;
+		this.colour = colour;
 	}
 }
