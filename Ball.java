@@ -27,12 +27,12 @@ public class Ball
 	 * @param diameter The diameter of the Ball (in pixels)
 	 * @param col The colour of the Ball (Permissable colours are: BLACK, BLUE, CYAN, DARKGREY, GREY, GREEN, LIGHTGREY, MAGENTA, ORANGE, PINK, RED, WHITE, YELLOW)
 	 */
-	public Ball(double x, double y, double diameter, String col)
+	public Ball(double xPosition, double yPosition, double diameter, String colour)
 	{
-		xPosition = x;
-		yPosition = y;
-		size = diameter;
-		colour = col;
+		this.xPosition = xPosition;
+		this.yPosition = yPosition;
+		this.size = diameter;
+		this.colour = colour;
 	}	
 
 	/**
@@ -41,7 +41,7 @@ public class Ball
 	 */
 	public double getXPosition()
 	{
-		return xPosition;
+		return this.xPosition;
 	}
 
 	/**
@@ -50,7 +50,7 @@ public class Ball
 	 */
 	public double getYPosition()
 	{
-		return yPosition;
+		return this.yPosition;
 	}
 
 	/**
@@ -77,16 +77,16 @@ public class Ball
 	 */
 	public double getSize()
 	{
-		return size;
+		return this.size;
 	}
 	
 	/**
 	 * Sets the diameter of this Ball to the given size.
 	 * @param s the new diameter of this Ball, in pixels.
 	 */
-	public void setSize(double s)
+	public void setSize(double size)
 	{
-		size = s;
+		this.size = size;
 	}
 
 	/**
@@ -95,15 +95,15 @@ public class Ball
 	 */
 	public String getColour()
 	{
-		return colour;
+		return this.colour;
 	}
 
 	/**
 	 * Sets the colour of this Ball.
 	 * @param c the new colour of this Ball, as a String value. Permissable colours are: BLACK, BLUE, CYAN, DARKGREY, GREY, GREEN, LIGHTGREY, MAGENTA, ORANGE, PINK, RED, WHITE, YELLOW.
 	 */
-	public void setColour(String c)
+	public void setColour(String colour)
 	{
-		colour = c;
+		colour = this.colour;
 	}
 }
