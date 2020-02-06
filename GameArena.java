@@ -16,8 +16,8 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 
 	private boolean exiting = false; 
 
-	private ArrayList<Ball> balls = new ArrayList<Ball>();
-	private ArrayList<Rectangle> rectangles = new ArrayList<Rectangle>();
+	private List<Ball> balls = new ArrayList<>();
+	private List<Rectangle> rectangles = new ArrayList<>();
 
 	private boolean up = false;
 	private boolean down = false;
