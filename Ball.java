@@ -106,4 +106,31 @@ public class Ball
 	{
 		colour = c;
 	}
+
+	/**
+	 * Moves this Ball by the given amount.
+	 * 
+	 * @param dx the distance to move on the x axis (in pixels)
+	 * @param dy the distance to move on the y axis (in pixels)
+	 */
+	public void move(double dx, double dy)
+	{
+		xPosition += dx;
+		yPosition += dy;
+	}
+
+	/**
+	 * Determines if this Ball is overlapping the given ball.
+	 * 
+	 * @param b the ball to test for collision
+	 * @return true of this ball is overlapping the ball b, false otherwise.
+	 */
+	public boolean collides(Ball b)
+	{
+		double dx = b.xPosition - xPosition;
+		double dy = b.yPosition - yPosition;
+		double distance = Math.sqrt(dx*dx+dy*dy);
+
+		return distance < size/2 + b.size/2;
+	}
 }

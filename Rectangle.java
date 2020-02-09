@@ -130,6 +130,24 @@ public class Rectangle
 		colour = c;
 	}
 
+	/**
+	 * Moves this Rectangle by the given amount.
+	 * 
+	 * @param dx the distance to move on the x axis (in pixels)
+	 * @param dy the distance to move on the y axis (in pixels)
+	 */
+	public void move(double dx, double dy)
+	{
+		xPosition += dx;
+		yPosition += dy;
+	}
+
+	/**
+	 * Determines if this Rectangle is overlapping the given rectangle.
+	 * 
+	 * @param r the rectangle to test for collision
+	 * @return true of this rectangle is overlapping the rectangle r, false otherwise.
+	 */
 	public boolean collides(Rectangle r)
 	{
 		return (xPosition + width > r.xPosition && xPosition < r.xPosition + r.width) && (yPosition + height > r.yPosition && yPosition < r.yPosition + r.height);
