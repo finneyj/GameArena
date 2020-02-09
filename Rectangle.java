@@ -129,4 +129,9 @@ public class Rectangle
 	{
 		colour = c;
 	}
+
+	public boolean collides(Rectangle r)
+	{
+		return (xPosition + width > r.xPosition && xPosition < r.xPosition + r.width) && (yPosition + height > r.yPosition && yPosition < r.yPosition + r.height);
+	}
 }
