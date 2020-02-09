@@ -25,6 +25,8 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 	private boolean right = false;
 	private boolean space = false;
 
+	private BufferedImage buffer;
+	private Graphics2D graphics;
 	private boolean rendered = false;
 
 	/**
@@ -85,38 +87,39 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 	 */
 	public void paint (Graphics gr)
 	{
+		Graphics2D window = (Graphics2D) gr;
+
 		if (!rendered)
 		{
 			this.setSize(arenaWidth, arenaHeight);
+			window.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			window.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+
+			buffer = new BufferedImage(arenaWidth, arenaHeight, BufferedImage.TYPE_INT_ARGB);
+			graphics = buffer.createGraphics();
+	
 			rendered = true;
 		}
-
-		Graphics2D window = (Graphics2D) gr;
-		BufferedImage i = new BufferedImage(arenaWidth, arenaHeight, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g = i.createGraphics();
-		
-		window.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		window.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 
 		synchronized (this)
 		{
 			if (!this.exiting)
 			{
-				g.clearRect(0,0, arenaWidth, arenaHeight);
+				graphics.clearRect(0,0, arenaWidth, arenaHeight);
 				for(Ball b : balls)
 				{
-					g.setColor(this.getColourFromString(b.getColour()));
-					g.fillOval((int)(b.getXPosition() - b.getSize()/2), (int)(b.getYPosition() - b.getSize()/2), (int)b.getSize(), (int)b.getSize());
+					graphics.setColor(this.getColourFromString(b.getColour()));
+					graphics.fillOval((int)(b.getXPosition() - b.getSize()/2), (int)(b.getYPosition() - b.getSize()/2), (int)b.getSize(), (int)b.getSize());
 				}
 
 				for(Rectangle b : rectangles)
 				{
-					g.setColor(this.getColourFromString(b.getColour()));
-					g.fillRect((int)b.getXPosition(), (int)b.getYPosition(), (int)b.getWidth(), (int)b.getHeight());
+					graphics.setColor(this.getColourFromString(b.getColour()));
+					graphics.fillRect((int)b.getXPosition(), (int)b.getYPosition(), (int)b.getWidth(), (int)b.getHeight());
 				}
 			}
 					
-			window.drawImage(i, this.getInsets().left, this.getInsets().top, this);
+			window.drawImage(buffer, this.getInsets().left, this.getInsets().top, this);
 		}
 	}
 
