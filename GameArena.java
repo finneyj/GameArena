@@ -18,6 +18,7 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 
 	private ArrayList<Ball> balls = new ArrayList<Ball>();
 	private ArrayList<Rectangle> rectangles = new ArrayList<Rectangle>();
+	private HashMap<String, Color> colours = new HashMap<>();
 
 	private boolean up = false;
 	private boolean down = false;
@@ -44,6 +45,21 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);		
 	
+		// Add standard colours.
+		colours.put("BLACK", Color.BLACK);
+		colours.put("BLUE", Color.BLUE);
+		colours.put("CYAN", Color.CYAN);
+		colours.put("DARKGREY", Color.DARK_GRAY);
+		colours.put("GREY", Color.GRAY);
+		colours.put("GREEN", Color.GREEN);
+		colours.put("LIGHTGREY", Color.LIGHT_GRAY);
+		colours.put("MAGENTA", Color.MAGENTA);
+		colours.put("ORANGE", Color.ORANGE);
+		colours.put("PINK", Color.PINK);
+		colours.put("RED", Color.RED);
+		colours.put("WHITE", Color.WHITE);
+		colours.put("YELLOW", Color.YELLOW);
+
 		Thread t = new Thread(this);
 		t.start();
 
@@ -129,51 +145,24 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 	// 
 	private Color getColourFromString(String col)
 	{
-		Color colour = Color.WHITE;
-		col = col.toUpperCase();
+		Color c = colours.get(col.toUpperCase());
 
-		if (col.equals("BLACK"))
-			colour = Color.BLACK;	
+		if (c == null && col.startsWith("#"))
+		{
+			int r = Integer.valueOf( col.substring( 1, 3 ), 16 );
+			int g = Integer.valueOf( col.substring( 3, 5 ), 16 );
+			int b = Integer.valueOf( col.substring( 5, 7 ), 16 );
 
-		if (col.equals("BLUE"))
-			colour = Color.BLUE;	
+			c = new Color(r,g,b);
+			colours.put(col.toUpperCase(), c);
+		}
 
-		if (col.equals("CYAN"))
-			colour = Color.CYAN;	
+		if (c == null)
+			c = Color.WHITE;
 
-		if (col.equals("DARKGREY"))
-			colour = Color.DARK_GRAY;	
-
-		if (col.equals("GREY"))
-			colour = Color.GRAY;	
-
-		if (col.equals("GREEN"))
-			colour = Color.GREEN;	
-
-		if (col.equals("LIGHTGREY"))
-			colour = Color.LIGHT_GRAY;	
-				
-		if (col.equals("MAGENTA"))
-			colour = Color.MAGENTA;	
-
-		if (col.equals("ORANGE"))
-			colour = Color.ORANGE;	
-
-		if (col.equals("PINK"))
-			colour = Color.PINK;	
-
-		if (col.equals("RED"))
-			colour = Color.RED;	
-		
-		if (col.equals("WHITE"))
-			colour = Color.WHITE;	
-
-		if (col.equals("YELLOW"))
-			colour = Color.YELLOW;	
-
-		return colour;
+		return c;
 	}
-	
+
 	/**
 	 * Adds a given Ball to the GameArena. 
 	 * Once a Ball is added, it will automatically appear on the window. 
