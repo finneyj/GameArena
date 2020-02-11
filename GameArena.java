@@ -359,5 +359,18 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 		return space;
 	}
 
+    //NB use lazy instantiation
+    private String[] names=null;
+	/**
+	 * Gets the known colour names.
+	 * @return an array of the names of pre-defined colours known by the GameArena
+	 */
+	public String[] getDefaultColourNames(){
+		if (names==null){
+			names = colours.keySet().stream().toArray(String[]::new);
+		}
+		return names;
+	}
+
 	
 }
