@@ -96,6 +96,7 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 	public void exit()
 	{
 		this.exiting = true;
+		this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
 	}
 
 	/**
