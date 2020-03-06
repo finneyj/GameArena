@@ -25,6 +25,11 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 	private boolean left = false;
 	private boolean right = false;
 	private boolean space = false;
+	private boolean esc = false;
+	private boolean enter = false;
+	private boolean x = false;
+	private boolean z = false;
+	private boolean o = false;
 
 	private BufferedImage buffer;
 	private Graphics2D graphics;
@@ -262,35 +267,39 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 
  	public void keyPressed(KeyEvent e) 
 	{
-		int code = e.getKeyCode();
-
-		if (code == KeyEvent.VK_UP)
-			up = true;		
-		if (code == KeyEvent.VK_DOWN)
-			down = true;		
-		if (code == KeyEvent.VK_LEFT)
-			left = true;		
-		if (code == KeyEvent.VK_RIGHT)
-			right = true;	
-		if (code == KeyEvent.VK_SPACE)
-			space = true;		
+		keyAction(e,true);
 	}
  	
-	public void keyReleased(KeyEvent e) 
+	public void keyAction(KeyEvent e,boolean yn) 
 	{
 		int code = e.getKeyCode();
 
 		if (code == KeyEvent.VK_UP)
-			up = false;		
+			up = yn;		
 		if (code == KeyEvent.VK_DOWN)
-			down = false;		
+			down = yn;		
 		if (code == KeyEvent.VK_LEFT)
-			left = false;		
+			left = yn;		
 		if (code == KeyEvent.VK_RIGHT)
-			right = false;		
+			right = yn;		
 		if (code == KeyEvent.VK_SPACE)
-			space = false;		
+			space = yn;
+		if (code == KeyEvent.VK_ESCAPE)
+			esc = yn;		
+		if (code == KeyEvent.VK_ENTER)
+			enter = yn;		
+		if (code == KeyEvent.VK_X)
+			x = yn;		
+		if (code == KeyEvent.VK_Z)
+			z = yn;		
+		if (code == KeyEvent.VK_O)
+			o = yn;		
 	}
+
+	public void keyReleased(KeyEvent e){
+		keyAction(e,false);
+	}
+
 
  	public void keyTyped(KeyEvent e) 
 	{
@@ -358,6 +367,52 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 	{
 		return space;
 	}
+
+        /** 
+	 * Determines if the user is currently pressing the Esc button.
+	 * @return true if the esc button is pressed, false otherwise.
+	 */
+	public boolean escPressed()
+	{
+		return esc;
+	}
+
+	/**
+	 * Determines if the user is currently pressing the enter button.
+	 * @return true if the enter button is pressed, false otherwise.
+	 */
+	public boolean enterPressed()
+	{
+		return enter;
+	}
+
+	/** 
+	 * Determines if the user is currently pressing the x button.
+	 * @return true if the x button is pressed, false otherwise.
+	 */
+	public boolean xPressed()
+	{
+		return x;
+	}
+
+	/**
+	 * Determines if the user is currently pressing the z button.
+	 * @return true if the z button is pressed, false otherwise.
+	 */
+	public boolean zPressed()
+	{
+		return z;
+	}
+
+	/**
+	 * Determines if the user is currently pressing the o button.
+	 * @return true if the o button is pressed, false otherwise.
+	 */
+	public boolean oPressed()
+	{
+		return o;
+	}
+
 
 	
 }
