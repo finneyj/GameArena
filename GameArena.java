@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.image.*;
 import java.awt.event.*;
 import java.util.*;
+import java.util.List;
 
 /**
  * This class provides a simple window in which grahical objects can be drawn. 
@@ -16,9 +17,9 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 
 	private boolean exiting = false; 
 
-	private ArrayList<Ball> balls = new ArrayList<Ball>();
-	private ArrayList<Rectangle> rectangles = new ArrayList<Rectangle>();
-	private HashMap<String, Color> colours = new HashMap<>();
+	private List<Ball> balls = new ArrayList<>();
+	private List<Rectangle> rectangles = new ArrayList<>();
+  private Map<String, Color> colours = new HashMap<>();
 
 	private boolean up = false;
 	private boolean down = false;
