@@ -43,7 +43,7 @@ public class Ball
 	 * @param y The y co-ordinate of centre of the Ball (in pixels)
 	 * @param diameter The diameter of the Ball (in pixels)
 	 * @param col The colour of the Ball (Permissable colours are: BLACK, BLUE, CYAN, DARKGREY, GREY, GREEN, LIGHTGREY, MAGENTA, ORANGE, PINK, RED, WHITE, YELLOW or ##RRGGBB)
-	 * * @param layer The layer this ball is to be drawn on. Objects with a higher layer number are always drawn on top of those with lower layer numbers.
+	 * @param layer The layer this ball is to be drawn on. Objects with a higher layer number are always drawn on top of those with lower layer numbers.
 	 */
 	public Ball(double x, double y, double diameter, String col, int layer)
 	{
