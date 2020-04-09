@@ -8,7 +8,7 @@ import java.util.*;
  * This class provides a simple window in which grahical objects can be drawn. 
  * @author Joe Finney
  */
-public class GameArena extends JFrame implements Runnable, KeyListener
+public class GameArena extends JFrame implements Runnable, KeyListener, MouseListener, MouseMotionListener
 {
 	// Size of playarea
 	private int arenaWidth;
@@ -24,12 +24,17 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 	private boolean down = false;
 	private boolean left = false;
 	private boolean right = false;
+	private boolean shift = false;
 	private boolean space = false;
 	private boolean esc = false;
 	private boolean enter = false;
 	private boolean x = false;
 	private boolean z = false;
 	private boolean o = false;
+	private boolean leftMouse = false;
+	private boolean rightMouse = false;
+	private int mouseX = 0;
+	private int mouseY = 0;
 
 	private BufferedImage buffer;
 	private Graphics2D graphics;
@@ -69,6 +74,8 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 		t.start();
 
 		this.addKeyListener(this);
+		this.getContentPane().addMouseListener(this);
+		this.getContentPane().addMouseMotionListener(this);
 	}
 
 	public void run() {
@@ -312,6 +319,8 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 			right = yn;		
 		if (code == KeyEvent.VK_SPACE)
 			space = yn;
+		if (code == KeyEvent.VK_SHIFT)
+			shift = yn;	
 		if (code == KeyEvent.VK_ESCAPE)
 			esc = yn;		
 		if (code == KeyEvent.VK_ENTER)
@@ -330,6 +339,47 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 
 
  	public void keyTyped(KeyEvent e) 
+	{
+	}
+
+
+	public void mousePressed(MouseEvent e) 
+	{
+		if (e.getButton() == MouseEvent.BUTTON1)
+			this.leftMouse = true;
+
+		if (e.getButton() == MouseEvent.BUTTON3)
+			this.rightMouse = true;
+	}
+
+	public void mouseReleased(MouseEvent e) 
+	{
+		if (e.getButton() == MouseEvent.BUTTON1)
+			this.leftMouse = false;
+
+		if (e.getButton() == MouseEvent.BUTTON3)
+			this.rightMouse = false;
+	}
+
+	public void mouseEntered(MouseEvent e) 
+	{
+	}
+
+	public void mouseExited(MouseEvent e) 
+	{
+	}
+
+	public void mouseClicked(MouseEvent e) 
+	{
+	}
+
+	public void mouseMoved(MouseEvent e) 
+	{
+		mouseX = e.getX();	
+		mouseY = e.getY();	
+	}
+
+	public void mouseDragged(MouseEvent e) 
 	{
 	}
 
@@ -441,6 +491,49 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 		return o;
 	}
 
+	/** 
+	 * Determines if the user is currently pressing the shift key.
+	 * @return true if the shift key is pressed, false otherwise.
+	 */
+	public boolean shiftPressed()
+	{
+		return shift;
+	}
 
+	/** 
+	 * Determines if the user is currently pressing the left mouse button.
+	 * @return true if the left mouse button is pressed, false otherwise.
+	 */
+	public boolean leftMousePressed()
+	{
+		return leftMouse;
+	}
+
+	/** 
+	 * Determines if the user is currently pressing the right mouse button.
+	 * @return true if the right mouse button is pressed, false otherwise.
+	 */
+	public boolean rightMousePressed()
+	{
+		return rightMouse;
+	}
+
+	/**
+	 * Gathers location informaiton on the mouse pointer.
+	 * @return the current X coordinate of the mouse pointer in the GameArena.
+	 */
+	public int getMousePositionX()
+	{
+		return mouseX;
+	}
+
+	/**
+	 * Gathers location informaiton on the mouse pointer.
+	 * @return the current Y coordinate of the mouse pointer in the GameArena.
+	 */
+	public int getMousePositionY()
+	{
+		return mouseY;
+	}
 	
 }
