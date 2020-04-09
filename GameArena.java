@@ -16,8 +16,8 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 
 	private boolean exiting = false; 
 
-	private ArrayList<Ball> balls = new ArrayList<Ball>();
-	private ArrayList<Rectangle> rectangles = new ArrayList<Rectangle>();
+	private ArrayList<Object> things = new ArrayList<Object>();
+
 	private HashMap<String, Color> colours = new HashMap<>();
 
 	private boolean up = false;
@@ -127,16 +127,22 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 			if (!this.exiting)
 			{
 				graphics.clearRect(0,0, arenaWidth, arenaHeight);
-				for(Ball b : balls)
-				{
-					graphics.setColor(this.getColourFromString(b.getColour()));
-					graphics.fillOval((int)(b.getXPosition() - b.getSize()/2), (int)(b.getYPosition() - b.getSize()/2), (int)b.getSize(), (int)b.getSize());
-				}
 
-				for(Rectangle b : rectangles)
+				for (Object o : things)
 				{
-					graphics.setColor(this.getColourFromString(b.getColour()));
-					graphics.fillRect((int)b.getXPosition(), (int)b.getYPosition(), (int)b.getWidth(), (int)b.getHeight());
+					if (o instanceof Ball)
+					{
+						Ball b = (Ball) o;
+						graphics.setColor(this.getColourFromString(b.getColour()));
+						graphics.fillOval((int)(b.getXPosition() - b.getSize()/2), (int)(b.getYPosition() - b.getSize()/2), (int)b.getSize(), (int)b.getSize());
+					}
+
+					if (o instanceof Rectangle)
+					{
+						Rectangle r = (Rectangle) o;
+						graphics.setColor(this.getColourFromString(r.getColour()));
+						graphics.fillRect((int)r.getXPosition(), (int)r.getYPosition(), (int)r.getWidth(), (int)r.getHeight());
+					}
 				}
 			}
 					
@@ -169,17 +175,17 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 	}
 
 	/**
-	 * Adds a given Ball to the GameArena. 
-	 * Once a Ball is added, it will automatically appear on the window. 
+	 * Adds a given Object to the drawlist, maintaining z buffering order. 
 	 *
-	 * @param b the ball to add to the GameArena.
+	 * @param o the object to add to the drawlist.
 	 */
-	public void addBall(Ball b)
+	private void addThing(Object o, int layer)
 	{
+		boolean added = false;
 
 		synchronized (this)
 		{
-			if (balls.size() > 100000)
+			if (things.size() > 100000)
 			{
 				System.out.println("\n\n");
 				System.out.println(" ********************************************************* ");
@@ -192,9 +198,55 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 			}
 			else
 			{
-				balls.add(b);
+				// Try to insert this object into the list.
+				for (int i=0; i<things.size(); i++)
+				{
+					int l = 0;
+					Object obj = things.get(i);
+
+					if (obj instanceof Ball)
+						l = ((Ball)obj).getLayer();
+
+					if (obj instanceof Rectangle)
+						l = ((Rectangle)obj).getLayer();
+
+					if (layer < l)
+					{
+						things.add(i,o);
+						added = true;
+						break;
+					}
+				}
+
+				// If there are no items in the list with an equivalent or higher layer, append this object to the end of the list.
+				if (!added)
+					things.add(o);
 			}
 		}
+	}
+
+	/**
+	 * Remove an object from the drawlist. 
+	 *
+	 * @param o the object to remove from the drawlist.
+	 */
+	private void removeObject(Object o)
+	{
+		synchronized (this)
+		{
+			things.remove(o);
+		}
+	}
+
+	/**
+	 * Adds a given Ball to the GameArena. 
+	 * Once a Ball is added, it will automatically appear on the window. 
+	 *
+	 * @param b the ball to add to the GameArena.
+	 */
+	public void addBall(Ball b)
+	{
+		this.addThing(b, b.getLayer());
 	}
 
 	/**
@@ -205,25 +257,7 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 	 */
 	public void addRectangle(Rectangle r)
 	{
-
-		synchronized (this)
-		{
-			if (rectangles.size() > 100000)
-			{
-				System.out.println("\n\n");
-				System.out.println(" ********************************************************* ");
-				System.out.println(" ***** Only 100000 Objects Supported per Game Arena! ***** ");
-				System.out.println(" ********************************************************* ");
-				System.out.println("\n");
-				System.out.println("-- Joe\n\n");
-
-				this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
-			}
-			else
-			{
-				rectangles.add(r);
-			}
-		}
+		this.addThing(r, r.getLayer());
 	}
 
 	/**
@@ -234,10 +268,7 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 	 */
 	public void removeRectangle(Rectangle r)
 	{
-		synchronized (this)
-		{
-			rectangles.remove(r);
-		}
+		this.removeObject(r);
 	}
 
 	/**
@@ -248,10 +279,7 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 	 */
 	public void removeBall(Ball b)
 	{
-		synchronized (this)
-		{
-			balls.remove(b);
-		}
+		this.removeObject(b);
 	}
 
 	/**

@@ -13,26 +13,45 @@ public class Ball
 	private double xPosition;			// The X coordinate of this Ball
 	private double yPosition;			// The Y coordinate of this Ball
 	private double size;				// The diameter of this Ball
+	private int layer;					// The layer of this ball is on.
 	private String colour;				// The colour of this Ball
 
 										// Permissable colours are:
 										// BLACK, BLUE, CYAN, DARKGREY, GREY,
 										// GREEN, LIGHTGREY, MAGENTA, ORANGE,
-										// PINK, RED, WHITE, YELLOW 
+										// PINK, RED, WHITE, YELLOW or #RRGGBB 
 
 	/**
 	 * Constructor. Creates a Ball with the given parameters.
 	 * @param x The x co-ordinate of centre of the Ball (in pixels)
 	 * @param y The y co-ordinate of centre of the Ball (in pixels)
 	 * @param diameter The diameter of the Ball (in pixels)
-	 * @param col The colour of the Ball (Permissable colours are: BLACK, BLUE, CYAN, DARKGREY, GREY, GREEN, LIGHTGREY, MAGENTA, ORANGE, PINK, RED, WHITE, YELLOW)
+	 * @param col The colour of the Ball (Permissable colours are: BLACK, BLUE, CYAN, DARKGREY, GREY, GREEN, LIGHTGREY, MAGENTA, ORANGE, PINK, RED, WHITE, YELLOW or ##RRGGBB)
 	 */
 	public Ball(double x, double y, double diameter, String col)
 	{
-		xPosition = x;
-		yPosition = y;
-		size = diameter;
-		colour = col;
+		this.xPosition = x;
+		this.yPosition = y;
+		this.size = diameter;
+		this.colour = col;
+		this.layer = 0;
+	}	
+
+	/**
+	 * Constructor. Creates a Ball with the given parameters.
+	 * @param x The x co-ordinate of centre of the Ball (in pixels)
+	 * @param y The y co-ordinate of centre of the Ball (in pixels)
+	 * @param diameter The diameter of the Ball (in pixels)
+	 * @param layer The layer this ball is to be drawn on. Objects with a higher layer number are always drawn on top of those with lower layer numbers.
+	 * @param col The colour of the Ball (Permissable colours are: BLACK, BLUE, CYAN, DARKGREY, GREY, GREEN, LIGHTGREY, MAGENTA, ORANGE, PINK, RED, WHITE, YELLOW or ##RRGGBB)
+	 */
+	public Ball(double x, double y, double diameter, String col, int layer)
+	{
+		this.xPosition = x;
+		this.yPosition = y;
+		this.size = diameter;
+		this.colour = col;
+		this.layer = layer;
 	}	
 
 	/**
@@ -90,6 +109,15 @@ public class Ball
 	}
 
 	/**
+	 * Obtains the layer of this Ball.
+	 * @return the layer of this Ball.
+	 */
+	public int getLayer()
+	{
+		return layer;
+	}
+
+	/**
 	 * Obtains the colour of this Ball.
 	 * @return a textual description of the colour of this Ball.
 	 */
@@ -100,7 +128,7 @@ public class Ball
 
 	/**
 	 * Sets the colour of this Ball.
-	 * @param c the new colour of this Ball, as a String value. Permissable colours are: BLACK, BLUE, CYAN, DARKGREY, GREY, GREEN, LIGHTGREY, MAGENTA, ORANGE, PINK, RED, WHITE, YELLOW.
+	 * @param c the new colour of this Ball, as a String value. Permissable colours are: BLACK, BLUE, CYAN, DARKGREY, GREY, GREEN, LIGHTGREY, MAGENTA, ORANGE, PINK, RED, WHITE, YELLOW or #RRGGBB.
 	 */
 	public void setColour(String c)
 	{

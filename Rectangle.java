@@ -14,6 +14,7 @@ public class Rectangle
 	private double yPosition;			// The Y coordinate of this Rectangle
 	private double width;				// The width of this Rectangle
 	private double height;				// The height of this Rectangle
+	private int layer;					// The layer of this ball is on.
 	private String colour;				// The colour of this Rectangle
 
 										// Permissable colours are:
@@ -28,18 +29,37 @@ public class Rectangle
 	 * @param y The y co-ordinate position of top left corner of the Rectangle (in pixels)
 	 * @param w The width of the Rectangle (in pixels)
 	 * @param h The height of the Rectangle (in pixels)
-	 * @param col The colour of the Rectangle (Permissable colours are: BLACK, BLUE, CYAN, DARKGREY, GREY, GREEN, LIGHTGREY, MAGENTA, ORANGE, PINK, RED, WHITE, YELLOW)
+	 * @param col The colour of the Rectangle (Permissable colours are: BLACK, BLUE, CYAN, DARKGREY, GREY, GREEN, LIGHTGREY, MAGENTA, ORANGE, PINK, RED, WHITE, YELLOW or #RRGGBB)
 	 */
 	public Rectangle(double x, double y, double w, double h, String col)
 	{
-		xPosition = x;
-		yPosition = y;
-		width = w;
-		height = h;
-		colour = col;
+		this.xPosition = x;
+		this.yPosition = y;
+		this.width = w;
+		this.height = h;
+		this.colour = col;
+		this.layer = 0;
 	}	
 									
-
+	/**
+	 * Constructor. Creates a Rectangle with the given parameters.
+	 * @param x The x co-ordinate position of top left corner of the Rectangle (in pixels)
+	 * @param y The y co-ordinate position of top left corner of the Rectangle (in pixels)
+	 * @param w The width of the Rectangle (in pixels)
+	 * @param h The height of the Rectangle (in pixels)
+	 * @param col The colour of the Rectangle (Permissable colours are: BLACK, BLUE, CYAN, DARKGREY, GREY, GREEN, LIGHTGREY, MAGENTA, ORANGE, PINK, RED, WHITE, YELLOW or #RRGGBB)
+	 * @param layer The layer this ball is to be drawn on. Objects with a higher layer number are always drawn on top of those with lower layer numbers.
+	 */
+	public Rectangle(double x, double y, double w, double h, String col, int layer)
+	{
+		this.xPosition = x;
+		this.yPosition = y;
+		this.width = w;
+		this.height = h;
+		this.colour = col;
+		this.layer = layer;
+	}	
+			
 	/**
 	 * Obtains the current position of this Rectangle.
 	 * @return the X coordinate of this Rectangle within the GameArena.
@@ -110,6 +130,15 @@ public class Rectangle
 	public void setHeight(double h)
 	{
 		height = h;
+	}
+
+	/**
+	 * Obtains the layer of this Ball.
+	 * @return the layer of this Ball.
+	 */
+	public int getLayer()
+	{
+		return layer;
 	}
 
 	/**
