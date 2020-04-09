@@ -1,8 +1,10 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.*;
 import java.awt.image.*;
 import java.awt.event.*;
 import java.util.*;
+
 
 /**
  * This class provides a simple window in which grahical objects can be drawn. 
@@ -38,6 +40,7 @@ public class GameArena extends JFrame implements Runnable, KeyListener, MouseLis
 
 	private BufferedImage buffer;
 	private Graphics2D graphics;
+	private Map<RenderingHints.Key, Object> renderingHints;
 	private boolean rendered = false;
 
 	/**
@@ -69,6 +72,19 @@ public class GameArena extends JFrame implements Runnable, KeyListener, MouseLis
 		colours.put("RED", Color.RED);
 		colours.put("WHITE", Color.WHITE);
 		colours.put("YELLOW", Color.YELLOW);
+
+		// Setup graphics rendering hints for quality
+		renderingHints = new HashMap<>();
+		renderingHints.put(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+		renderingHints.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		renderingHints.put(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+		renderingHints.put(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
+		renderingHints.put(RenderingHints.KEY_FRACTIONALMETRICS,RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+		renderingHints.put(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+		renderingHints.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+		renderingHints.put(RenderingHints.KEY_RESOLUTION_VARIANT, RenderingHints.VALUE_RESOLUTION_VARIANT_DPI_FIT);
+		renderingHints.put(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+		renderingHints.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
 
 		Thread t = new Thread(this);
 		t.start();
@@ -120,14 +136,15 @@ public class GameArena extends JFrame implements Runnable, KeyListener, MouseLis
 		if (!rendered)
 		{
 			this.setSize(arenaWidth, arenaHeight);
-			window.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			window.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 
 			buffer = new BufferedImage(arenaWidth, arenaHeight, BufferedImage.TYPE_INT_ARGB);
 			graphics = buffer.createGraphics();
-	
+			graphics.setRenderingHints(renderingHints);
+
 			rendered = true;
 		}
+
+		window.setRenderingHints(renderingHints);
 
 		synchronized (this)
 		{
@@ -149,6 +166,23 @@ public class GameArena extends JFrame implements Runnable, KeyListener, MouseLis
 						Rectangle r = (Rectangle) o;
 						graphics.setColor(this.getColourFromString(r.getColour()));
 						graphics.fillRect((int)r.getXPosition(), (int)r.getYPosition(), (int)r.getWidth(), (int)r.getHeight());
+					}
+
+					if (o instanceof Line)
+					{
+						Line l = (Line) o;
+						graphics.setColor(this.getColourFromString(l.getColour()));
+						graphics.setStroke(new BasicStroke((float)l.getWidth()));
+
+                		graphics.draw(new Line2D.Float((float)l.getXStart(), (float)l.getYStart(), (float)l.getXEnd(), (float)l.getYEnd()));
+					}
+
+					if (o instanceof Text)
+					{
+						Text t = (Text) o;
+						graphics.setFont(new Font("SansSerif", Font.BOLD, t.getSize()));
+						graphics.setColor(this.getColourFromString(t.getColour()));
+						graphics.drawString(t.getText(),(float)t.getXPosition(), (float)t.getYPosition());
 					}
 				}
 			}
@@ -217,6 +251,12 @@ public class GameArena extends JFrame implements Runnable, KeyListener, MouseLis
 					if (obj instanceof Rectangle)
 						l = ((Rectangle)obj).getLayer();
 
+					if (obj instanceof Line)
+						l = ((Line)obj).getLayer();
+
+					if (obj instanceof Text)
+						l = ((Text)obj).getLayer();
+
 					if (layer < l)
 					{
 						things.add(i,o);
@@ -258,7 +298,7 @@ public class GameArena extends JFrame implements Runnable, KeyListener, MouseLis
 
 	/**
 	 * Adds a given Rectangle to the GameArena. 
-	 * Once a Ball rectangle is added, it will automatically appear on the window. 
+	 * Once a rectangle is added, it will automatically appear on the window. 
 	 *
 	 * @param r the rectangle to add to the GameArena.
 	 */
@@ -266,6 +306,29 @@ public class GameArena extends JFrame implements Runnable, KeyListener, MouseLis
 	{
 		this.addThing(r, r.getLayer());
 	}
+
+	/**
+	 * Adds a given Line to the GameArena. 
+	 * Once a Line is added, it will automatically appear on the window. 
+	 *
+	 * @param l the line to add to the GameArena.
+	 */
+	public void addLine(Line l)
+	{
+		this.addThing(l, l.getLayer());
+	}
+
+	/**
+	 * Adds a given Text object to the GameArena. 
+	 * Once a Text object is added, it will automatically appear on the window. 
+	 *
+	 * @param t the text object to add to the GameArena.
+	 */
+	public void addText(Text t)
+	{
+		this.addThing(t, t.getLayer());
+	}
+
 
 	/**
 	 * Remove a Rectangle from the GameArena. 
@@ -287,6 +350,28 @@ public class GameArena extends JFrame implements Runnable, KeyListener, MouseLis
 	public void removeBall(Ball b)
 	{
 		this.removeObject(b);
+	}
+
+	/**
+	 * Remove a Line from the GameArena. 
+	 * Once a Line is removed, it will no longer appear on the window. 
+	 *
+	 * @param l the line to remove from the GameArena.
+	 */
+	public void removeLine(Line l)
+	{
+		this.removeObject(l);
+	}
+
+	/**
+	 * Remove a Text object from the GameArena. 
+	 * Once a Text object is removed, it will no longer appear on the window. 
+	 *
+	 * @param t the text object to remove from the GameArena.
+	 */
+	public void removeText(Text t)
+	{
+		this.removeObject(t);
 	}
 
 	/**
