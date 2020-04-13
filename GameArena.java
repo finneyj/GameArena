@@ -174,7 +174,19 @@ public class GameArena extends JFrame implements Runnable, KeyListener, MouseLis
 						graphics.setColor(this.getColourFromString(l.getColour()));
 						graphics.setStroke(new BasicStroke((float)l.getWidth()));
 
-                		graphics.draw(new Line2D.Float((float)l.getXStart(), (float)l.getYStart(), (float)l.getXEnd(), (float)l.getYEnd()));
+						float sx = (float)l.getXStart();
+						float sy = (float)l.getYStart();
+						float ex = (float)l.getXEnd();
+						float ey = (float)l.getYEnd();
+
+						if (l.getArrowSize() > 0)
+						{
+							float arrowRatio = (float) (1.0 - ((l.getWidth() * l.getArrowSize()) / l.getLength()));
+							ex = sx + ((ex - sx) * arrowRatio); 
+							ey = sy + ((ey - sy) * arrowRatio); 
+							graphics.fillPolygon(l.getArrowX(), l.getArrowY(), 3);
+						}
+						graphics.draw(new Line2D.Float(sx,sy,ex,ey));
 					}
 
 					if (o instanceof Text)

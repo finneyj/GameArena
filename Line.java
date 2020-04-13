@@ -10,18 +10,21 @@ public class Line
 	// Feel free to more instance variables if you think it will 
 	// support your work... 
 	
-	private double xStart;			// The X coordinate of the start of this line 
-	private double yStart;			// The Y coordinate of the start of this line 
-	private double xEnd;			// The X coordinate of the end of this line 
-	private double yEnd;			// The Y coordinate of the end of this line
-	private double width;			// The thickness of the line
-	private int layer;				// The layer this line is drawn on
-	private String colour = "WHITE";	// The colour of this line
+	private double xStart;						// The X coordinate of the start of this line 
+	private double yStart;						// The Y coordinate of the start of this line 
+	private double xEnd;						// The X coordinate of the end of this line 
+	private double yEnd;						// The Y coordinate of the end of this line
+	private double width;						// The thickness of the line
+	private double arrowSize;					// Size of the arrowhead on this line
+	private int[] arrowX = new int[3];			// Optinal coordinates of an arrowhead on this line (x)
+	private int[] arrowY = new int[3];			// Optinal coordinates of an arrowhead on this line (y)
 
-										// Permissable colours are:
-										// BLACK, BLUE, CYAN, DARKGREY, GREY,
-										// GREEN, DARKGREEN, LIGHTGREY, MAGENTA, ORANGE,
-										// PINK, RED, WHITE, YELLOW, BROWN 
+	private int layer;							// The layer this line is drawn on
+	private String colour = "WHITE";			// The colour of this line
+												// Permissable colours are:
+												// BLACK, BLUE, CYAN, DARKGREY, GREY,
+												// GREEN, DARKGREEN, LIGHTGREY, MAGENTA, ORANGE,
+												// PINK, RED, WHITE, YELLOW, BROWN 
 
 	/**
 	 * Obtains the start position of this line on the X axis.
@@ -61,6 +64,38 @@ public class Line
 	}
 
 	/**
+	 * Determines the size of the arrowhead on this line
+	 * @return the size of the arrowhead on this line
+	 */
+	public double getArrowSize()
+	{
+		return arrowSize;
+	}
+
+	/**
+	 * Defined the size of the arrowhead on this line, as a proportion to the line's width.
+	 * @param size The new size for the arrowhead on this line.
+	 */
+
+	public void setArrowSize(double size)
+	{
+		arrowSize = size;
+		this.recalculateArrowhead();
+	}
+
+	/**
+	 * Determines the length of this line.
+	 * @return the lenght of this line.
+	 */
+	public double getLength()
+	{
+		double lx = xEnd - xStart;
+		double ly = yEnd - yStart;
+		
+		return Math.sqrt(lx*lx + ly*ly);
+	}
+
+	/**
 	 * Moves the current position of this line to the given X and Y co-ordinates
 	 * @param x1 the new x co-ordinate of the start of this line
 	 * @param y1 the new y co-ordinate of the start of this line
@@ -73,8 +108,19 @@ public class Line
 		this.xEnd = x2;
 		this.yStart = y1;
 		this.yEnd = y2;
+
+		this.recalculateArrowhead();
 	}
 
+	/**
+	 * Defines the width of this line.
+	 * @param width The new width of this line, in pixels.
+	 */
+	public void setWidth(double width)
+	{
+		this.width = width;
+		this.recalculateArrowhead();
+	}
 
 	/**
 	 * Obtains the width of this line.
@@ -103,28 +149,83 @@ public class Line
 		return layer;
 	}
 
+	/**
+	 * Determines the x-coordinates of the points that form this lines arrowhead.
+	 * @return An array of three x coorindates.
+	 */
+	public int[] getArrowX()
+	{
+		return arrowX;
+	}
 
+	/**
+	 * Determines the y-coordinates of the points that form this lines arrowhead.
+	 * @return An array of three y coorindates.
+	 */
+	public int[] getArrowY()
+	{
+		return arrowY;
+	}
+
+	/**
+	 * Constructor. Creates a Line with the given parameters.
+	 * @param x1 The x co-ordinate of the start of the Line (in pixels)
+	 * @param y1 The y co-ordinate of the start of the Line (in pixels)
+	 * @param x2 The x co-ordinate of the end of the Line (in pixels)
+	 * @param y2 The y co-ordinate of the end of the Line (in pixels)
+	 * @param thickness The width of the Line (in pixels)
+	 * @param col The colour of the Line (Permissable colours are: BLACK, BLUE, CYAN, DARKGREY, GREY, GREEN, LIGHTGREY, MAGENTA, ORANGE, PINK, RED, WHITE, YELLOW or ##RRGGBB)
+	 * @param lay The layer the Line is to be drawn on. Objects with a higher layer number are always drawn on top of those with lower layer numbers.
+	 */
 	public Line(double x1, double y1, double x2, double y2, double thickness, String col, int lay)
 	{
-		xStart = x1;
-		yStart = y1;
-		xEnd = x2;
-		yEnd = y2;
-
 		width = thickness;
 		colour = col;
 		layer = lay;
+		arrowSize = 0;
+		this.setLinePosition(x1, y1, x2, y2);
 	}	
 
+	/**
+	 * Constructor. Creates a Line with the given parameters.
+	 * @param x1 The x co-ordinate of the start of the Line (in pixels)
+	 * @param y1 The y co-ordinate of the start of the Line (in pixels)
+	 * @param x2 The x co-ordinate of the end of the Line (in pixels)
+	 * @param y2 The y co-ordinate of the end of the Line (in pixels)
+	 * @param thickness The width of the Line (in pixels)
+	 * @param col The colour of the Line (Permissable colours are: BLACK, BLUE, CYAN, DARKGREY, GREY, GREEN, LIGHTGREY, MAGENTA, ORANGE, PINK, RED, WHITE, YELLOW or ##RRGGBB)
+	 */
 	public Line(double x1, double y1, double x2, double y2, double thickness, String col)
 	{
-		xStart = x1;
-		yStart = y1;
-		xEnd = x2;
-		yEnd = y2;
-
 		width = thickness;
 		colour = col;
 		layer = 0;
-	}	
+		arrowSize = 0;
+		this.setLinePosition(x1, y1, x2, y2);
+	}
+	
+	private void recalculateArrowhead()
+	{
+		// Calculate component distances and length
+		double lx = xEnd - xStart;
+		double ly = yEnd - yStart;
+		double length = this.getLength();
+
+		// Calculate normalized vector of this line.
+		double dx = lx / length;
+		double dy = ly / length;
+
+		// Calculate the line thickness as a proportion of the length
+		double arrowSize = width * this.getArrowSize();
+		double arrowRatio = 1.0 - (arrowSize / length);
+
+		// Update arrowHead cooridnates
+		arrowX[0] = (int) xEnd;
+		arrowX[1] = (int) ((xStart + lx * arrowRatio) - dy * arrowSize);
+		arrowX[2] = (int) ((xStart + lx * arrowRatio) + dy * arrowSize);
+
+		arrowY[0] = (int) yEnd;
+		arrowY[1] = (int) ((yStart + ly * arrowRatio) + dx * arrowSize);
+		arrowY[2] = (int) ((yStart + ly * arrowRatio) - dx * arrowSize);
+	}
 }
