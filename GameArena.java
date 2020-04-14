@@ -10,9 +10,10 @@ import java.util.*;
  * This class provides a simple window in which grahical objects can be drawn. 
  * @author Joe Finney
  */
-public class GameArena extends JFrame implements Runnable, KeyListener, MouseListener, MouseMotionListener
+public class GameArena extends JPanel implements Runnable, KeyListener, MouseListener, MouseMotionListener
 {
 	// Size of playarea
+	private JFrame frame;
 	private int arenaWidth;
 	private int arenaHeight;
 
@@ -51,13 +52,40 @@ public class GameArena extends JFrame implements Runnable, KeyListener, MouseLis
 	 */
 	public GameArena(int width, int height)
 	{
-		this.setTitle("Let's Play!");
-		this.setSize(width, height);
-		this.setResizable(false);
-		this.setBackground(Color.BLACK);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setVisible(true);		
+		this.init(width, height, true);
+	}
+
+	/**
+	 * Create a view of a GameArena.
+	 * 
+	 * @param width The width of the playing area, in pixels.
+	 * @param height The height of the playing area, in pixels.
+	 * @param createWindow Defines if a window should be created to host this GameArena. @see getPanel.
+	 */
+	public GameArena(int width, int height, boolean createWindow)
+	{
+		this.init(width, height, createWindow);
+	}
+
+	/**
+	 * Internal initialisation method - called by constructor methods.
+	 */
+	private void init(int width, int height, boolean createWindow)
+	{
+		if (createWindow)
+		{
+			this.frame = new JFrame();
+			frame.setTitle("Let's Play!");
+			frame.setSize(width, height);
+			frame.setResizable(false);
+			frame.setBackground(Color.BLACK);
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			frame.setContentPane(this);
+			frame.setVisible(true);		
+		}
 	
+		this.setSize(width, height);
+
 		// Add standard colours.
 		colours.put("BLACK", Color.BLACK);
 		colours.put("BLUE", Color.BLUE);
@@ -89,18 +117,20 @@ public class GameArena extends JFrame implements Runnable, KeyListener, MouseLis
 		Thread t = new Thread(this);
 		t.start();
 
-		this.addKeyListener(this);
-		this.getContentPane().addMouseListener(this);
-		this.getContentPane().addMouseMotionListener(this);
+		this.addMouseListener(this);
+		this.addMouseMotionListener(this);
 	}
 
 	public void run() {
 		try {
-			while (true) {
+			while (!exiting) {
 				this.repaint();
 				Thread.sleep(10);
 			}
 		} catch (InterruptedException iex) {}
+
+		if (frame != null)
+			frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
 	}
 
 	/**
@@ -114,9 +144,26 @@ public class GameArena extends JFrame implements Runnable, KeyListener, MouseLis
 		this.arenaWidth = width;
 		this.arenaHeight = height;
 
-		super.setSize(arenaWidth + this.getInsets().left + this.getInsets().right, arenaHeight + this.getInsets().top + this.getInsets().bottom);
+		super.setSize(width,height);
+
+		if (frame != null)
+			frame.setSize(arenaWidth + frame.getInsets().left + frame.getInsets().right, arenaHeight + frame.getInsets().top + frame.getInsets().bottom);
+
+
 	}	
 
+	/**
+	 * Retrieves the JPanel on which this gameArena is drawn, so that it can be integrated into
+	 * a users application. 
+	 * 
+	 * n.b. This should only be called if this GameArena was constructed without its own JFrame
+	 * 
+	 * @return the JPanel containing this GameArena.
+	 */
+	public JPanel getPanel()
+	{
+		return this;
+	}
 	/**
 	 * Close this GameArena window.
 	 * 
@@ -137,10 +184,16 @@ public class GameArena extends JFrame implements Runnable, KeyListener, MouseLis
 		{
 			this.setSize(arenaWidth, arenaHeight);
 
+			// Create a buffer the same size of the window, which we can reuse from frame to frame to improve performance.
 			buffer = new BufferedImage(arenaWidth, arenaHeight, BufferedImage.TYPE_INT_ARGB);
 			graphics = buffer.createGraphics();
 			graphics.setRenderingHints(renderingHints);
 
+			// Find the JFrame we have been added to, and attach a KeyListner
+			JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+			frame.addKeyListener(this);
+
+			// Remember that we've completed this initialisation, so that we don't do it again...
 			rendered = true;
 		}
 
@@ -236,6 +289,9 @@ public class GameArena extends JFrame implements Runnable, KeyListener, MouseLis
 	{
 		boolean added = false;
 
+		if (exiting)
+			return;
+
 		synchronized (this)
 		{
 			if (things.size() > 100000)
@@ -246,8 +302,8 @@ public class GameArena extends JFrame implements Runnable, KeyListener, MouseLis
 				System.out.println(" ********************************************************* ");
 				System.out.println("\n");
 				System.out.println("-- Joe\n\n");
-
-				this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+				
+				this.exit();
 			}
 			else
 			{
