@@ -143,4 +143,23 @@ public class Text
 	{
 		this.colour = colour;
 	}
+
+	/**
+	 * Moves the current position of this Text to the given co-ordinates
+	 * @param x the new x co-ordinate of this Text
+	 */
+	public void setXPosition(double x)
+	{
+		this.xPosition = x;
+	}
+
+	/**
+	 * Moves the current position of this Text to the given co-ordinates
+	 * @param y the new y co-ordinate of this Text
+	 */
+	public void setYPosition(double y)
+	{
+		this.yPosition = y;
+	}
+
 }
