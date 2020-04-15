@@ -119,6 +119,9 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
+
+		if (frame != null)
+			frame.addKeyListener(this);
 	}
 
 	public void run() {
@@ -189,12 +192,17 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 			graphics = buffer.createGraphics();
 			graphics.setRenderingHints(renderingHints);
 
-			// Find the JFrame we have been added to, and attach a KeyListner
-			JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
-			frame.addKeyListener(this);
-
 			// Remember that we've completed this initialisation, so that we don't do it again...
 			rendered = true;
+		}
+
+		if (frame == null)
+		{
+			// Find the JFrame we have been added to, and attach a KeyListner
+			frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+
+			if (frame != null)
+				frame.addKeyListener(this);
 		}
 
 		window.setRenderingHints(renderingHints);
