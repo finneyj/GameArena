@@ -89,10 +89,11 @@ public class Text
 
 	/**
 	 * Constructor. Creates a new piece of text at the given coordinates.
-	 * 
+	 *
+	 * @param text The text to display 
+	 * @param size The font size of of the text
 	 * @param x The x co-ordinate of the text
 	 * @param y The y co-ordinate of the text
-	 * @param size The font size of of the text
 	 * @param col The colour of the line (Permissable colours are: BLACK, BLUE, CYAN, DARKGREY, GREY, GREEN, LIGHTGREY, MAGENTA, ORANGE, PINK, RED, WHITE, YELLOW or ##RRGGBB)
 	 * @param layer The layer this line is to be drawn on. Objects with a higher layer number are always drawn on top of those with lower layer numbers. 
 	 */
@@ -109,9 +110,10 @@ public class Text
 	/**
 	 * Constructor. Creates a new piece of text at the given coordinates.
 	 * 
+	 * @param text The text to display 
+	 * @param size The font size of of the text
 	 * @param x The x co-ordinate of the text
 	 * @param y The y co-ordinate of the text
-	 * @param size The font size of of the text
 	 * @param col The colour of the line (Permissable colours are: BLACK, BLUE, CYAN, DARKGREY, GREY, GREEN, LIGHTGREY, MAGENTA, ORANGE, PINK, RED, WHITE, YELLOW or ##RRGGBB)
 	 */
 	public Text(String text, int size, double x, double y, String col)
