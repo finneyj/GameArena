@@ -1,33 +1,47 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.*;
 import java.awt.image.*;
 import java.awt.event.*;
 import java.util.*;
+
 
 /**
  * This class provides a simple window in which grahical objects can be drawn. 
  * @author Joe Finney
  */
-public class GameArena extends JFrame implements Runnable, KeyListener
+public class GameArena extends JPanel implements Runnable, KeyListener, MouseListener, MouseMotionListener
 {
 	// Size of playarea
+	private JFrame frame;
 	private int arenaWidth;
 	private int arenaHeight;
 
 	private boolean exiting = false; 
 
-	private ArrayList<Ball> balls = new ArrayList<Ball>();
-	private ArrayList<Rectangle> rectangles = new ArrayList<Rectangle>();
+	private ArrayList<Object> things = new ArrayList<Object>();
+
 	private HashMap<String, Color> colours = new HashMap<>();
 
 	private boolean up = false;
 	private boolean down = false;
 	private boolean left = false;
 	private boolean right = false;
+	private boolean shift = false;
 	private boolean space = false;
+	private boolean esc = false;
+	private boolean enter = false;
+	private boolean x = false;
+	private boolean z = false;
+	private boolean o = false;
+	private boolean leftMouse = false;
+	private boolean rightMouse = false;
+	private int mouseX = 0;
+	private int mouseY = 0;
 
 	private BufferedImage buffer;
 	private Graphics2D graphics;
+	private Map<RenderingHints.Key, Object> renderingHints;
 	private boolean rendered = false;
 
 	/**
@@ -38,13 +52,40 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 	 */
 	public GameArena(int width, int height)
 	{
-		this.setTitle("Let's Play!");
-		this.setSize(width, height);
-		this.setResizable(false);
-		this.setBackground(Color.BLACK);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setVisible(true);		
+		this.init(width, height, true);
+	}
+
+	/**
+	 * Create a view of a GameArena.
+	 * 
+	 * @param width The width of the playing area, in pixels.
+	 * @param height The height of the playing area, in pixels.
+	 * @param createWindow Defines if a window should be created to host this GameArena. @see getPanel.
+	 */
+	public GameArena(int width, int height, boolean createWindow)
+	{
+		this.init(width, height, createWindow);
+	}
+
+	/**
+	 * Internal initialisation method - called by constructor methods.
+	 */
+	private void init(int width, int height, boolean createWindow)
+	{
+		if (createWindow)
+		{
+			this.frame = new JFrame();
+			frame.setTitle("Let's Play!");
+			frame.setSize(width, height);
+			frame.setResizable(false);
+			frame.setBackground(Color.BLACK);
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			frame.setContentPane(this);
+			frame.setVisible(true);		
+		}
 	
+		this.setSize(width, height);
+
 		// Add standard colours.
 		colours.put("BLACK", Color.BLACK);
 		colours.put("BLUE", Color.BLUE);
@@ -60,19 +101,39 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 		colours.put("WHITE", Color.WHITE);
 		colours.put("YELLOW", Color.YELLOW);
 
+		// Setup graphics rendering hints for quality
+		renderingHints = new HashMap<>();
+		renderingHints.put(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+		renderingHints.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		renderingHints.put(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+		renderingHints.put(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
+		renderingHints.put(RenderingHints.KEY_FRACTIONALMETRICS,RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+		renderingHints.put(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+		renderingHints.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+		renderingHints.put(RenderingHints.KEY_RESOLUTION_VARIANT, RenderingHints.VALUE_RESOLUTION_VARIANT_DPI_FIT);
+		renderingHints.put(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+		renderingHints.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
+
 		Thread t = new Thread(this);
 		t.start();
 
-		this.addKeyListener(this);
+		this.addMouseListener(this);
+		this.addMouseMotionListener(this);
+
+		if (frame != null)
+			frame.addKeyListener(this);
 	}
 
 	public void run() {
 		try {
-			while (true) {
+			while (!exiting) {
 				this.repaint();
 				Thread.sleep(10);
 			}
 		} catch (InterruptedException iex) {}
+
+		if (frame != null)
+			frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
 	}
 
 	/**
@@ -86,9 +147,26 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 		this.arenaWidth = width;
 		this.arenaHeight = height;
 
-		super.setSize(arenaWidth + this.getInsets().left + this.getInsets().right, arenaHeight + this.getInsets().top + this.getInsets().bottom);
+		super.setSize(width,height);
+
+		if (frame != null)
+			frame.setSize(arenaWidth + frame.getInsets().left + frame.getInsets().right, arenaHeight + frame.getInsets().top + frame.getInsets().bottom);
+
+
 	}	
 
+	/**
+	 * Retrieves the JPanel on which this gameArena is drawn, so that it can be integrated into
+	 * a users application. 
+	 * 
+	 * n.b. This should only be called if this GameArena was constructed without its own JFrame
+	 * 
+	 * @return the JPanel containing this GameArena.
+	 */
+	public JPanel getPanel()
+	{
+		return this;
+	}
 	/**
 	 * Close this GameArena window.
 	 * 
@@ -109,30 +187,77 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 		if (!rendered)
 		{
 			this.setSize(arenaWidth, arenaHeight);
-			window.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			window.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 
+			// Create a buffer the same size of the window, which we can reuse from frame to frame to improve performance.
 			buffer = new BufferedImage(arenaWidth, arenaHeight, BufferedImage.TYPE_INT_ARGB);
 			graphics = buffer.createGraphics();
-	
+			graphics.setRenderingHints(renderingHints);
+
+			// Remember that we've completed this initialisation, so that we don't do it again...
 			rendered = true;
 		}
+
+		if (frame == null)
+		{
+			// Find the JFrame we have been added to, and attach a KeyListner
+			frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+
+			if (frame != null)
+				frame.addKeyListener(this);
+		}
+
+		window.setRenderingHints(renderingHints);
 
 		synchronized (this)
 		{
 			if (!this.exiting)
 			{
 				graphics.clearRect(0,0, arenaWidth, arenaHeight);
-				for(Ball b : balls)
-				{
-					graphics.setColor(this.getColourFromString(b.getColour()));
-					graphics.fillOval((int)(b.getXPosition() - b.getSize()/2), (int)(b.getYPosition() - b.getSize()/2), (int)b.getSize(), (int)b.getSize());
-				}
 
-				for(Rectangle b : rectangles)
+				for (Object o : things)
 				{
-					graphics.setColor(this.getColourFromString(b.getColour()));
-					graphics.fillRect((int)b.getXPosition(), (int)b.getYPosition(), (int)b.getWidth(), (int)b.getHeight());
+					if (o instanceof Ball)
+					{
+						Ball b = (Ball) o;
+						graphics.setColor(this.getColourFromString(b.getColour()));
+						graphics.fillOval((int)(b.getXPosition() - b.getSize()/2), (int)(b.getYPosition() - b.getSize()/2), (int)b.getSize(), (int)b.getSize());
+					}
+
+					if (o instanceof Rectangle)
+					{
+						Rectangle r = (Rectangle) o;
+						graphics.setColor(this.getColourFromString(r.getColour()));
+						graphics.fillRect((int)r.getXPosition(), (int)r.getYPosition(), (int)r.getWidth(), (int)r.getHeight());
+					}
+
+					if (o instanceof Line)
+					{
+						Line l = (Line) o;
+						graphics.setColor(this.getColourFromString(l.getColour()));
+						graphics.setStroke(new BasicStroke((float)l.getWidth()));
+
+						float sx = (float)l.getXStart();
+						float sy = (float)l.getYStart();
+						float ex = (float)l.getXEnd();
+						float ey = (float)l.getYEnd();
+
+						if (l.getArrowSize() > 0)
+						{
+							float arrowRatio = (float) (1.0 - ((l.getWidth() * l.getArrowSize()) / l.getLength()));
+							ex = sx + ((ex - sx) * arrowRatio); 
+							ey = sy + ((ey - sy) * arrowRatio); 
+							graphics.fillPolygon(l.getArrowX(), l.getArrowY(), 3);
+						}
+						graphics.draw(new Line2D.Float(sx,sy,ex,ey));
+					}
+
+					if (o instanceof Text)
+					{
+						Text t = (Text) o;
+						graphics.setFont(new Font("SansSerif", Font.BOLD, t.getSize()));
+						graphics.setColor(this.getColourFromString(t.getColour()));
+						graphics.drawString(t.getText(),(float)t.getXPosition(), (float)t.getYPosition());
+					}
 				}
 			}
 					
@@ -165,6 +290,79 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 	}
 
 	/**
+	 * Adds a given Object to the drawlist, maintaining z buffering order. 
+	 *
+	 * @param o the object to add to the drawlist.
+	 */
+	private void addThing(Object o, int layer)
+	{
+		boolean added = false;
+
+		if (exiting)
+			return;
+
+		synchronized (this)
+		{
+			if (things.size() > 100000)
+			{
+				System.out.println("\n\n");
+				System.out.println(" ********************************************************* ");
+				System.out.println(" ***** Only 100000 Objects Supported per Game Arena! ***** ");
+				System.out.println(" ********************************************************* ");
+				System.out.println("\n");
+				System.out.println("-- Joe\n\n");
+				
+				this.exit();
+			}
+			else
+			{
+				// Try to insert this object into the list.
+				for (int i=0; i<things.size(); i++)
+				{
+					int l = 0;
+					Object obj = things.get(i);
+
+					if (obj instanceof Ball)
+						l = ((Ball)obj).getLayer();
+
+					if (obj instanceof Rectangle)
+						l = ((Rectangle)obj).getLayer();
+
+					if (obj instanceof Line)
+						l = ((Line)obj).getLayer();
+
+					if (obj instanceof Text)
+						l = ((Text)obj).getLayer();
+
+					if (layer < l)
+					{
+						things.add(i,o);
+						added = true;
+						break;
+					}
+				}
+
+				// If there are no items in the list with an equivalent or higher layer, append this object to the end of the list.
+				if (!added)
+					things.add(o);
+			}
+		}
+	}
+
+	/**
+	 * Remove an object from the drawlist. 
+	 *
+	 * @param o the object to remove from the drawlist.
+	 */
+	private void removeObject(Object o)
+	{
+		synchronized (this)
+		{
+			things.remove(o);
+		}
+	}
+
+	/**
 	 * Adds a given Ball to the GameArena. 
 	 * Once a Ball is added, it will automatically appear on the window. 
 	 *
@@ -172,55 +370,42 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 	 */
 	public void addBall(Ball b)
 	{
-
-		synchronized (this)
-		{
-			if (balls.size() > 100000)
-			{
-				System.out.println("\n\n");
-				System.out.println(" ********************************************************* ");
-				System.out.println(" ***** Only 100000 Objects Supported per Game Arena! ***** ");
-				System.out.println(" ********************************************************* ");
-				System.out.println("\n");
-				System.out.println("-- Joe\n\n");
-
-				this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
-			}
-			else
-			{
-				balls.add(b);
-			}
-		}
+		this.addThing(b, b.getLayer());
 	}
 
 	/**
 	 * Adds a given Rectangle to the GameArena. 
-	 * Once a Ball rectangle is added, it will automatically appear on the window. 
+	 * Once a rectangle is added, it will automatically appear on the window. 
 	 *
 	 * @param r the rectangle to add to the GameArena.
 	 */
 	public void addRectangle(Rectangle r)
 	{
-
-		synchronized (this)
-		{
-			if (rectangles.size() > 100000)
-			{
-				System.out.println("\n\n");
-				System.out.println(" ********************************************************* ");
-				System.out.println(" ***** Only 100000 Objects Supported per Game Arena! ***** ");
-				System.out.println(" ********************************************************* ");
-				System.out.println("\n");
-				System.out.println("-- Joe\n\n");
-
-				this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
-			}
-			else
-			{
-				rectangles.add(r);
-			}
-		}
+		this.addThing(r, r.getLayer());
 	}
+
+	/**
+	 * Adds a given Line to the GameArena. 
+	 * Once a Line is added, it will automatically appear on the window. 
+	 *
+	 * @param l the line to add to the GameArena.
+	 */
+	public void addLine(Line l)
+	{
+		this.addThing(l, l.getLayer());
+	}
+
+	/**
+	 * Adds a given Text object to the GameArena. 
+	 * Once a Text object is added, it will automatically appear on the window. 
+	 *
+	 * @param t the text object to add to the GameArena.
+	 */
+	public void addText(Text t)
+	{
+		this.addThing(t, t.getLayer());
+	}
+
 
 	/**
 	 * Remove a Rectangle from the GameArena. 
@@ -230,10 +415,7 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 	 */
 	public void removeRectangle(Rectangle r)
 	{
-		synchronized (this)
-		{
-			rectangles.remove(r);
-		}
+		this.removeObject(r);
 	}
 
 	/**
@@ -244,10 +426,29 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 	 */
 	public void removeBall(Ball b)
 	{
-		synchronized (this)
-		{
-			balls.remove(b);
-		}
+		this.removeObject(b);
+	}
+
+	/**
+	 * Remove a Line from the GameArena. 
+	 * Once a Line is removed, it will no longer appear on the window. 
+	 *
+	 * @param l the line to remove from the GameArena.
+	 */
+	public void removeLine(Line l)
+	{
+		this.removeObject(l);
+	}
+
+	/**
+	 * Remove a Text object from the GameArena. 
+	 * Once a Text object is removed, it will no longer appear on the window. 
+	 *
+	 * @param t the text object to remove from the GameArena.
+	 */
+	public void removeText(Text t)
+	{
+		this.removeObject(t);
 	}
 
 	/**
@@ -263,37 +464,84 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 
  	public void keyPressed(KeyEvent e) 
 	{
-		int code = e.getKeyCode();
-
-		if (code == KeyEvent.VK_UP)
-			up = true;		
-		if (code == KeyEvent.VK_DOWN)
-			down = true;		
-		if (code == KeyEvent.VK_LEFT)
-			left = true;		
-		if (code == KeyEvent.VK_RIGHT)
-			right = true;	
-		if (code == KeyEvent.VK_SPACE)
-			space = true;		
+		keyAction(e,true);
 	}
  	
-	public void keyReleased(KeyEvent e) 
+	public void keyAction(KeyEvent e,boolean yn) 
 	{
 		int code = e.getKeyCode();
 
 		if (code == KeyEvent.VK_UP)
-			up = false;		
+			up = yn;		
 		if (code == KeyEvent.VK_DOWN)
-			down = false;		
+			down = yn;		
 		if (code == KeyEvent.VK_LEFT)
-			left = false;		
+			left = yn;		
 		if (code == KeyEvent.VK_RIGHT)
-			right = false;		
+			right = yn;		
 		if (code == KeyEvent.VK_SPACE)
-			space = false;		
+			space = yn;
+		if (code == KeyEvent.VK_SHIFT)
+			shift = yn;	
+		if (code == KeyEvent.VK_ESCAPE)
+			esc = yn;		
+		if (code == KeyEvent.VK_ENTER)
+			enter = yn;		
+		if (code == KeyEvent.VK_X)
+			x = yn;		
+		if (code == KeyEvent.VK_Z)
+			z = yn;		
+		if (code == KeyEvent.VK_O)
+			o = yn;		
 	}
 
+	public void keyReleased(KeyEvent e){
+		keyAction(e,false);
+	}
+
+
  	public void keyTyped(KeyEvent e) 
+	{
+	}
+
+
+	public void mousePressed(MouseEvent e) 
+	{
+		if (e.getButton() == MouseEvent.BUTTON1)
+			this.leftMouse = true;
+
+		if (e.getButton() == MouseEvent.BUTTON3)
+			this.rightMouse = true;
+	}
+
+	public void mouseReleased(MouseEvent e) 
+	{
+		if (e.getButton() == MouseEvent.BUTTON1)
+			this.leftMouse = false;
+
+		if (e.getButton() == MouseEvent.BUTTON3)
+			this.rightMouse = false;
+	}
+
+	public void mouseEntered(MouseEvent e) 
+	{
+	}
+
+	public void mouseExited(MouseEvent e) 
+	{
+	}
+
+	public void mouseClicked(MouseEvent e) 
+	{
+	}
+
+	public void mouseMoved(MouseEvent e) 
+	{
+		mouseX = e.getX();	
+		mouseY = e.getY();	
+	}
+
+	public void mouseDragged(MouseEvent e) 
 	{
 	}
 
@@ -360,5 +608,94 @@ public class GameArena extends JFrame implements Runnable, KeyListener
 		return space;
 	}
 
+        /** 
+	 * Determines if the user is currently pressing the Esc button.
+	 * @return true if the esc button is pressed, false otherwise.
+	 */
+	public boolean escPressed()
+	{
+		return esc;
+	}
+
+	/**
+	 * Determines if the user is currently pressing the enter button.
+	 * @return true if the enter button is pressed, false otherwise.
+	 */
+	public boolean enterPressed()
+	{
+		return enter;
+	}
+
+	/** 
+	 * Determines if the user is currently pressing the x button.
+	 * @return true if the x button is pressed, false otherwise.
+	 */
+	public boolean xPressed()
+	{
+		return x;
+	}
+
+	/**
+	 * Determines if the user is currently pressing the z button.
+	 * @return true if the z button is pressed, false otherwise.
+	 */
+	public boolean zPressed()
+	{
+		return z;
+	}
+
+	/**
+	 * Determines if the user is currently pressing the o button.
+	 * @return true if the o button is pressed, false otherwise.
+	 */
+	public boolean oPressed()
+	{
+		return o;
+	}
+
+	/** 
+	 * Determines if the user is currently pressing the shift key.
+	 * @return true if the shift key is pressed, false otherwise.
+	 */
+	public boolean shiftPressed()
+	{
+		return shift;
+	}
+
+	/** 
+	 * Determines if the user is currently pressing the left mouse button.
+	 * @return true if the left mouse button is pressed, false otherwise.
+	 */
+	public boolean leftMousePressed()
+	{
+		return leftMouse;
+	}
+
+	/** 
+	 * Determines if the user is currently pressing the right mouse button.
+	 * @return true if the right mouse button is pressed, false otherwise.
+	 */
+	public boolean rightMousePressed()
+	{
+		return rightMouse;
+	}
+
+	/**
+	 * Gathers location informaiton on the mouse pointer.
+	 * @return the current X coordinate of the mouse pointer in the GameArena.
+	 */
+	public int getMousePositionX()
+	{
+		return mouseX;
+	}
+
+	/**
+	 * Gathers location informaiton on the mouse pointer.
+	 * @return the current Y coordinate of the mouse pointer in the GameArena.
+	 */
+	public int getMousePositionY()
+	{
+		return mouseY;
+	}
 	
 }
