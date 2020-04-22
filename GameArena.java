@@ -83,7 +83,17 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 			frame.setContentPane(this);
 			frame.setVisible(true);		
 		}
-	
+
+    	String version = System.getProperty("java.version");
+    	if(version.startsWith("1.")) {
+        	version = version.substring(2, 3);
+    	} else {
+        	int dot = version.indexOf(".");
+        if(dot != -1) { version = version.substring(0, dot); }
+    	} 
+
+		int ver = Integer.parseInt(version);
+
 		this.setSize(width, height);
 
 		// Add standard colours.
@@ -109,10 +119,14 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 		renderingHints.put(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
 		renderingHints.put(RenderingHints.KEY_FRACTIONALMETRICS,RenderingHints.VALUE_FRACTIONALMETRICS_ON);
 		renderingHints.put(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-		renderingHints.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+		
 		renderingHints.put(RenderingHints.KEY_RESOLUTION_VARIANT, RenderingHints.VALUE_RESOLUTION_VARIANT_DPI_FIT);
 		renderingHints.put(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
 		renderingHints.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
+
+		if(ver >= 9) {
+			renderingHints.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+		}
 
 		Thread t = new Thread(this);
 		t.start();
@@ -174,7 +188,6 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	public void exit()
 	{
 		this.exiting = true;
-		this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
 	}
 
 	/**
