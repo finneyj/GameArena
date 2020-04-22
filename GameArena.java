@@ -115,11 +115,9 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 		renderingHints.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
 
 		try {
-			RenderingHints hints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			Class rh = Class.forName("java.awt.RenderingHints");
-
-			RenderingHints.Key key = (RenderingHints.Key) rh.getField("KEY_RESOLUTION_VARIANT").get(hints);
-			Object value = rh.getField("VALUE_RESOLUTION_VARIANT_DPI_FIT").get(hints);
+			RenderingHints.Key key = (RenderingHints.Key) rh.getField("KEY_RESOLUTION_VARIANT").get(null);
+			Object value = rh.getField("VALUE_RESOLUTION_VARIANT_DPI_FIT").get(null);
 			renderingHints.put(key, value);
 		}
 		catch (Exception e){}
