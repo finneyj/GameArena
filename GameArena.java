@@ -213,6 +213,7 @@ public class GameArena extends JPanel implements KeyListener, MouseListener, Mou
 		return new Dimension(arenaWidth, arenaHeight);
 	}
 
+	int redx = 100;
 	/**
 	 * A method called by the operating system to draw onto the screen - <p><B>YOU DO NOT (AND SHOULD NOT) NEED TO CALL THIS METHOD.</b></p>
 	 */
@@ -246,7 +247,7 @@ public class GameArena extends JPanel implements KeyListener, MouseListener, Mou
 
 		
 		graphics.setColor(this.getColourFromString("RED"));
-		graphics.fillOval(100, 100, 20, 20);
+		graphics.fillOval(redx++, 100, 20, 20);
 		//window.drawImage(buffer, this.getInsets().left, this.getInsets().top, this);
 
 
