@@ -73,18 +73,6 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	 */
 	private void init(int width, int height, boolean createWindow)
 	{
-		if (createWindow)
-		{
-			this.frame = new JFrame();
-			frame.setTitle("Let's Play!");
-			frame.setSize(width, height);
-			frame.setResizable(false);
-			frame.setBackground(Color.BLACK);
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			frame.setContentPane(this);
-			frame.setVisible(true);		
-		}
-
 		this.setSize(width, height);
 
 		// Add standard colours.
@@ -121,6 +109,18 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 			renderingHints.put(key, value);
 		}
 		catch (Exception e){}
+
+		if (createWindow)
+		{
+			this.frame = new JFrame();
+			frame.setTitle("Let's Play!");
+			frame.setSize(width, height);
+			frame.setResizable(false);
+			frame.setBackground(Color.BLACK);
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			frame.setContentPane(this);
+			frame.setVisible(true);		
+		}
 
 		Thread t = new Thread(this);
 		t.start();
@@ -266,8 +266,9 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 						graphics.drawString(t.getText(),(float)t.getXPosition(), (float)t.getYPosition());
 					}
 				}
+				try{ Thread.sleep(0); } catch (Exception e) {} 
 			}
-					
+
 			window.drawImage(buffer, this.getInsets().left, this.getInsets().top, this);
 		}
 	}
