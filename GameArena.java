@@ -274,7 +274,7 @@ public class GameArena extends JPanel implements KeyListener, MouseListener, Mou
 						graphics.fillOval((int)(b.getXPosition() - b.getSize()/2), (int)(b.getYPosition() - b.getSize()/2), (int)b.getSize(), (int)b.getSize());
 					}
 
-					/*
+					
 					if (o instanceof Rectangle)
 					{
 						Rectangle r = (Rectangle) o;
@@ -310,7 +310,7 @@ public class GameArena extends JPanel implements KeyListener, MouseListener, Mou
 						graphics.setColor(this.getColourFromString(t.getColour()));
 						graphics.drawString(t.getText(),(float)t.getXPosition(), (float)t.getYPosition());
 					}
-					*/
+					
 				}
 				//try{ Thread.sleep(0); } catch (Exception e) {} 
 				window.drawImage(buffer, this.getInsets().left, this.getInsets().top, this);
