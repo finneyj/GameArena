@@ -221,8 +221,6 @@ public class GameArena extends JPanel implements KeyListener, MouseListener, Mou
 	{
 		super.paintComponent(gr); 
 
-		System.out.println("DRAW: " + redx);
-
 		Graphics2D window = (Graphics2D) gr;
 
 		if (!rendered)
@@ -247,9 +245,10 @@ public class GameArena extends JPanel implements KeyListener, MouseListener, Mou
 				frame.addKeyListener(this);
 		}
 
-		
-		graphics.setColor(this.getColourFromString("RED"));
-		graphics.fillOval(redx++, 100, 20, 20);
+		// If we're still not attached to a frame, there's nothing to do...
+		if (frame == null)
+			return;
+
 		//window.drawImage(buffer, this.getInsets().left, this.getInsets().top, this);
 
 
@@ -261,7 +260,10 @@ public class GameArena extends JPanel implements KeyListener, MouseListener, Mou
 			if (!this.exiting)
 			{
 */
-				//graphics.clearRect(0,0, arenaWidth, arenaHeight);
+				graphics.clearRect(0,0, arenaWidth, arenaHeight);
+
+				graphics.setColor(this.getColourFromString("RED"));
+				graphics.fillOval(redx++, 100, 20, 20);
 
 				for (Object o : things)
 				{
