@@ -253,13 +253,12 @@ public class GameArena extends JPanel implements KeyListener, MouseListener, Mou
 
 
 		//window.setRenderingHints(renderingHints);
-
-/*		
+		
 		synchronized (this)
 		{
 			if (!this.exiting)
 			{
-*/
+
 				graphics.clearRect(0,0, arenaWidth, arenaHeight);
 
 				graphics.setColor(this.getColourFromString("RED"));
@@ -314,10 +313,9 @@ public class GameArena extends JPanel implements KeyListener, MouseListener, Mou
 				}
 				//try{ Thread.sleep(0); } catch (Exception e) {} 
 				window.drawImage(buffer, this.getInsets().left, this.getInsets().top, this);
-	/*
+	
 			}
 		}
-	*/
 	}
 
 	//
