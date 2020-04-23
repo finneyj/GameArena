@@ -189,6 +189,8 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	 */
 	public void paintComponent (Graphics gr)
 	{
+		super.paintComponent(gr); 
+
 		Graphics2D window = (Graphics2D) gr;
 
 		if (!rendered)
