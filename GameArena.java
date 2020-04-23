@@ -55,7 +55,13 @@ public class GameArena extends JPanel implements KeyListener, MouseListener, Mou
 	 */
 	public GameArena(int width, int height)
 	{
-		this.init(width, height, true);
+        EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+				init(width, height, true);   
+			}
+        });
+
 	}
 
 	/**
@@ -67,7 +73,13 @@ public class GameArena extends JPanel implements KeyListener, MouseListener, Mou
 	 */
 	public GameArena(int width, int height, boolean createWindow)
 	{
-		this.init(width, height, createWindow);
+		EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+				init(width, height, createWindow);
+			}
+	    });
+
 	}
 
 	/**
