@@ -258,7 +258,7 @@ public class GameArena extends JPanel implements KeyListener, MouseListener, Mou
 			if (!this.exiting)
 			{
 */
-				graphics.clearRect(0,0, arenaWidth, arenaHeight);
+				//graphics.clearRect(0,0, arenaWidth, arenaHeight);
 
 				for (Object o : things)
 				{
