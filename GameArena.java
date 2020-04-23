@@ -11,7 +11,7 @@ import java.lang.reflect.*;
  * This class provides a simple window in which grahical objects can be drawn. 
  * @author Joe Finney
  */
-public class GameArena extends JPanel implements Runnable, KeyListener, MouseListener, MouseMotionListener
+public class GameArena extends JPanel implements KeyListener, MouseListener, MouseMotionListener
 {
 	// Size of playarea
 	private JFrame frame;
@@ -44,6 +44,8 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	private Graphics2D graphics;
 	private Map<RenderingHints.Key, Object> renderingHints;
 	private boolean rendered = false;
+
+	private javax.swing.Timer timer;               // Timer object
 
 	/**
 	 * Create a view of a GameArena.
@@ -122,8 +124,8 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 			frame.setVisible(true);		
 		}
 
-		Thread t = new Thread(this);
-		t.start();
+		timer = new javax.swing.Timer(10, new TimerListener());
+		timer.start();
 
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
@@ -132,18 +134,28 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 			frame.addKeyListener(this);
 	}
 
-	public void run() {
-		try {
-			while (!exiting) {
-				this.repaint();
-				Thread.sleep(10);
-			}
-		} catch (InterruptedException iex) {}
+	private class TimerListener implements ActionListener {
 
-		if (frame != null)
-			frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+		public void actionPerformed(ActionEvent e) {
+			// Force a call to the paint method
+			repaint();
+		}
+
 	}
 
+	//public void run() {
+	//	try {
+	//		while (!exiting) {
+	//			this.repaint();
+	//			Thread.sleep(10);
+	//		}
+	//	} catch (InterruptedException iex) {}
+	//
+	//	if (frame != null)
+	//		frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+	//}
+
+	
 	/**
 	 * Update the size of the GameArena.
 	 *
