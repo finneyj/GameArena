@@ -208,6 +208,11 @@ public class GameArena extends JPanel implements KeyListener, MouseListener, Mou
 		this.exiting = true;
 	}
 
+	@Override
+	public Dimension getPreferredSize() {
+		return new Dimension(arenaWidth, arenaHeight);
+	}
+
 	/**
 	 * A method called by the operating system to draw onto the screen - <p><B>YOU DO NOT (AND SHOULD NOT) NEED TO CALL THIS METHOD.</b></p>
 	 */
