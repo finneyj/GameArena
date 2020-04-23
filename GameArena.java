@@ -221,6 +221,8 @@ public class GameArena extends JPanel implements KeyListener, MouseListener, Mou
 	{
 		super.paintComponent(gr); 
 
+		System.out.println("DRAW: " + redx);
+
 		Graphics2D window = (Graphics2D) gr;
 
 		if (!rendered)
