@@ -222,10 +222,6 @@ public class GameArena extends JPanel implements KeyListener, MouseListener, Mou
 
 		Graphics2D window = (Graphics2D) gr;
 
-		window.setColor(this.getColourFromString("RED"));
-		window.fillOval(100, 100, 20, 20);
-
-		/*
 		if (!rendered)
 		{
 			this.setSize(arenaWidth, arenaHeight);
@@ -248,8 +244,15 @@ public class GameArena extends JPanel implements KeyListener, MouseListener, Mou
 				frame.addKeyListener(this);
 		}
 
+		
+		graphics.setColor(this.getColourFromString("RED"));
+		graphics.fillOval(100, 100, 20, 20);
+		window.drawImage(buffer, this.getInsets().left, this.getInsets().top, this);
+
+
 		//window.setRenderingHints(renderingHints);
 
+		/*
 		synchronized (this)
 		{
 			if (!this.exiting)
