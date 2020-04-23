@@ -229,7 +229,7 @@ public class GameArena extends JPanel implements KeyListener, MouseListener, Mou
 			// Create a buffer the same size of the window, which we can reuse from frame to frame to improve performance.
 			buffer = new BufferedImage(arenaWidth, arenaHeight, BufferedImage.TYPE_INT_ARGB);
 			graphics = buffer.createGraphics();
-			graphics.setRenderingHints(renderingHints);
+			//graphics.setRenderingHints(renderingHints);
 
 			// Remember that we've completed this initialisation, so that we don't do it again...
 			rendered = true;
@@ -244,7 +244,7 @@ public class GameArena extends JPanel implements KeyListener, MouseListener, Mou
 				frame.addKeyListener(this);
 		}
 
-		window.setRenderingHints(renderingHints);
+		//window.setRenderingHints(renderingHints);
 
 		synchronized (this)
 		{
@@ -297,7 +297,7 @@ public class GameArena extends JPanel implements KeyListener, MouseListener, Mou
 						graphics.drawString(t.getText(),(float)t.getXPosition(), (float)t.getYPosition());
 					}
 				}
-				try{ Thread.sleep(0); } catch (Exception e) {} 
+				//try{ Thread.sleep(0); } catch (Exception e) {} 
 			}
 
 			window.drawImage(buffer, this.getInsets().left, this.getInsets().top, this);
