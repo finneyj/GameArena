@@ -187,7 +187,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	/**
 	 * A method called by the operating system to draw onto the screen - <p><B>YOU DO NOT (AND SHOULD NOT) NEED TO CALL THIS METHOD.</b></p>
 	 */
-	public void paint (Graphics gr)
+	public void paintComponent (Graphics gr)
 	{
 		Graphics2D window = (Graphics2D) gr;
 
