@@ -4,8 +4,8 @@ import java.awt.geom.*;
 import java.awt.image.*;
 import java.awt.event.*;
 import java.util.*;
+import java.util.List;
 import java.lang.Class;
-import java.lang.reflect.*;
 
 /**
  * This class provides a simple window in which grahical objects can be drawn. 
@@ -20,9 +20,9 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 
 	private boolean exiting = false; 
 
-	private ArrayList<Object> things = new ArrayList<Object>();
+	private List<Object> things = new ArrayList<Object>();
 
-	private HashMap<String, Color> colours = new HashMap<>();
+	private Map<String, Color> colours = new HashMap<>();
 
 	private boolean up = false;
 	private boolean down = false;
@@ -226,44 +226,22 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 					if (o instanceof Ball)
 					{
 						Ball b = (Ball) o;
-						graphics.setColor(this.getColourFromString(b.getColour()));
-						graphics.fillOval((int)(b.getXPosition() - b.getSize()/2), (int)(b.getYPosition() - b.getSize()/2), (int)b.getSize(), (int)b.getSize());
-					}
-
-					if (o instanceof Rectangle)
+						b.draw(graphics, this);
+					} 
+					 else if (o instanceof Rectangle)
 					{
 						Rectangle r = (Rectangle) o;
-						graphics.setColor(this.getColourFromString(r.getColour()));
-						graphics.fillRect((int)r.getXPosition(), (int)r.getYPosition(), (int)r.getWidth(), (int)r.getHeight());
-					}
-
-					if (o instanceof Line)
+						r.draw(graphics, this);
+					} 
+					else if (o instanceof Line)
 					{
 						Line l = (Line) o;
-						graphics.setColor(this.getColourFromString(l.getColour()));
-						graphics.setStroke(new BasicStroke((float)l.getWidth()));
-
-						float sx = (float)l.getXStart();
-						float sy = (float)l.getYStart();
-						float ex = (float)l.getXEnd();
-						float ey = (float)l.getYEnd();
-
-						if (l.getArrowSize() > 0)
-						{
-							float arrowRatio = (float) (1.0 - ((l.getWidth() * l.getArrowSize()) / l.getLength()));
-							ex = sx + ((ex - sx) * arrowRatio); 
-							ey = sy + ((ey - sy) * arrowRatio); 
-							graphics.fillPolygon(l.getArrowX(), l.getArrowY(), 3);
-						}
-						graphics.draw(new Line2D.Float(sx,sy,ex,ey));
+						l.draw(graphics, this);
 					}
-
-					if (o instanceof Text)
+					else if (o instanceof Text)
 					{
 						Text t = (Text) o;
-						graphics.setFont(new Font("SansSerif", Font.BOLD, t.getSize()));
-						graphics.setColor(this.getColourFromString(t.getColour()));
-						graphics.drawString(t.getText(),(float)t.getXPosition(), (float)t.getYPosition());
+						t.draw(graphics, this);
 					}
 				}
 			}
@@ -276,7 +254,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	// Shouldn't really handle colour this way, but the student's haven't been introduced
 	// to constants properly yet, hmmm....
 	// 
-	private Color getColourFromString(String col)
+	public Color getColourFromString(String col)
 	{
 		Color c = colours.get(col.toUpperCase());
 

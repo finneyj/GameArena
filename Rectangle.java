@@ -1,3 +1,5 @@
+import java.awt.*;
+
 /**
  * Models a simple, solid rectangle. 
  * This class represents a Rectabgle object. When combined with the GameArena class,
@@ -180,5 +182,17 @@ public class Rectangle
 	public boolean collides(Rectangle r)
 	{
 		return (xPosition + width > r.xPosition && xPosition < r.xPosition + r.width) && (yPosition + height > r.yPosition && yPosition < r.yPosition + r.height);
+	}
+
+	/**
+	 * 
+	 * Draws the {@link Rectangle} on the canvas
+	 * 
+	 * @param graphics The canvas being drawn on
+	 * @param gameArena The game arena from which the {@link Rectangle} originiates
+	 */
+	public void draw(Graphics2D graphics, GameArena gameArena) {
+		graphics.setColor(gameArena.getColourFromString(this.getColour()));
+		graphics.fillRect((int) this.getXPosition(), (int) this.getYPosition(), (int) this.getWidth(), (int) this.getHeight());
 	}
 }

@@ -1,3 +1,6 @@
+import java.awt.*;
+import java.awt.geom.*;
+
 /**
  * Models a simple line. 
  * This class represents a Line object. When combined with the GameArena class,
@@ -227,5 +230,33 @@ public class Line
 		arrowY[0] = (int) yEnd;
 		arrowY[1] = (int) ((yStart + ly * arrowRatio) + dx * arrowSize);
 		arrowY[2] = (int) ((yStart + ly * arrowRatio) - dx * arrowSize);
+	}
+	
+	/**
+	 * 
+	 * Draws the {@link Line} on the canvas
+	 * 
+	 * @param graphics The canvas being drawn on
+	 * @param gameArena The game arena from which the {@link Line} originiates
+	 */	
+	public void draw(Graphics2D graphics, GameArena gameArena) {
+		graphics.setColor(gameArena.getColourFromString(this.getColour()));
+		graphics.setStroke(new BasicStroke((float) this.getWidth()));
+
+		float sx = (float) this.getXStart();
+		float sy = (float) this.getYStart();
+		float ex = (float) this.getXEnd();
+		float ey = (float) this.getYEnd();
+
+		if (this.getArrowSize() > 0)
+		{
+			float arrowRatio = (float) (1.0 - ((this.getWidth() * this.getArrowSize()) / this.getLength()));
+			ex = sx + ((ex - sx) * arrowRatio); 
+			ey = sy + ((ey - sy) * arrowRatio);
+			 
+			graphics.fillPolygon(this.getArrowX(), this.getArrowY(), 3);
+		}
+
+		graphics.draw(new Line2D.Float(sx,sy,ex,ey));
 	}
 }
