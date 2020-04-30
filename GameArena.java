@@ -303,10 +303,9 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	 */
 	private void addThing(Object o, int layer)
 	{
-		boolean added = false;
-
-		if (exiting)
+		if (exiting) {
 			return;
+		}
 
 		synchronized (this)
 		{
@@ -323,35 +322,33 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 			}
 			else
 			{
-				// Try to insert this object into the list.
-				for (int i=0; i<things.size(); i++)
-				{
-					int l = 0;
-					Object obj = things.get(i);
+				boolean added = false;
+				int position = 0;
 
-					if (obj instanceof Ball)
-						l = ((Ball)obj).getLayer();
+				while(!added && position < this.things.size()) {
+					Object thing = this.things.get(position);
+					int thingLayer = 0;
 
-					if (obj instanceof Rectangle)
-						l = ((Rectangle)obj).getLayer();
+					if (thing instanceof Ball) {
+						thingLayer = ((Ball) thing).getLayer();
+					} else if (thing instanceof Rectangle) {
+						thingLayer = ((Rectangle) thing).getLayer();
+					} else if (thing instanceof Line) {
+						thingLayer = ((Line) thing).getLayer();
+					} else if (thing instanceof Text) {
+						thingLayer = ((Text) thing).getLayer();
+					}
 
-					if (obj instanceof Line)
-						l = ((Line)obj).getLayer();
-
-					if (obj instanceof Text)
-						l = ((Text)obj).getLayer();
-
-					if (layer < l)
-					{
-						things.add(i,o);
+					if(layer < thingLayer) {
+						this.things.add(position, o);
 						added = true;
-						break;
 					}
 				}
 
 				// If there are no items in the list with an equivalent or higher layer, append this object to the end of the list.
-				if (!added)
+				if (!added) {
 					things.add(o);
+				}
 			}
 		}
 	}
