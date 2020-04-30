@@ -455,9 +455,9 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 
 	/**
 	 * 
-	 * Gets the number of milli-seconds for which the {@link Thread} sleeps between each frame
+	 * Gets the number of milliseconds for which the {@link Thread} sleeps between each frame
 	 * 
-	 * @return The millis for which the thread will sleep between each frame
+	 * @return The milliseconds for which the thread will sleep between each frame
 	 */
 	public int getPauseDelay() {
 		return this.pauseDelay;
@@ -465,9 +465,9 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 
 	/**
 	 * 
-	 * Sets the millis that the default {@link GameArena#pause()} method sleeps the {@link Thread} for
+	 * Sets the milliseconds that the default {@link GameArena#pause()} method sleeps the {@link Thread} for
 	 * 
-	 * @param pauseDelay The time in milli seconds for which the {@link Thread} will sleep
+	 * @param pauseDelay The time in milliseconds for which the {@link Thread} will sleep
 	 */
 	public void setPauseDelay(int pauseDelay) {
 		this.pauseDelay = pauseDelay;
@@ -485,13 +485,13 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 
 	/**
 	 * 
-	 * Pause the {@link Thread} for {@param millis} milli-seconds
+	 * Pause the {@link Thread} for {@param milliseconds} milliseconds
 	 * 
-	 * @param millis the number of milli-seconds the {@link Thread} is paused for
+	 * @param milliseconds the number of milliseconds the {@link Thread} is paused for
 	 */
-	private void pause(int millis) {
+	private void pause(int milliseconds) {
 		try { 
-			Thread.sleep(millis); 
+			Thread.sleep(milliseconds); 
 		} catch (Exception ignored) {};
 	}
 
