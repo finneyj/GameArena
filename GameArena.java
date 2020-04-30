@@ -48,7 +48,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	private Graphics2D graphics;
 	private Map<RenderingHints.Key, Object> renderingHints;
 	private boolean rendered = false;
-	private int frameDelay = 20;
+	private int pauseDelay = 20;
 
 	/**
 	 * Create a view of a GameArena.
@@ -141,7 +141,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 		try {
 			while (!exiting) {
 				this.repaint();
-				Thread.sleep(this.frameDelay / 2);
+				Thread.sleep(this.pauseDelay / 2);
 			}
 		} catch (InterruptedException iex) {}
 
@@ -457,28 +457,28 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	 * 
 	 * @return The millis for which the thread will sleep between each frame
 	 */
-	public int getFrameDelay() {
-		return this.frameDelay;
+	public int setPauseDelay() {
+		return this.pauseDelay;
 	}
 
 	/**
 	 * 
 	 * Sets the millis that the default {@link GameArena#pause()} method sleeps the {@link Thread} for
 	 * 
-	 * @param frameDelay The time in milli seconds for which the {@link Thread} will sleep
+	 * @param pauseDelay The time in milli seconds for which the {@link Thread} will sleep
 	 */
-	public void setFrameDelay(int frameDelay) {
-		this.frameDelay = frameDelay;
+	public void setPauseDelay(int pauseDelay) {
+		this.pauseDelay = pauseDelay;
 	}
 
 	/**
-	 * Pause for the configured milliseconds using {@link GameArena#setFrameDelay(int)}. 
+	 * Pause for the configured milliseconds using {@link GameArena#setPauseDelay(int)}. 
 	 * This method causes your program to delay for 1/50th of a second. You'll find this useful if you're trying to animate your application.
 	 *
 	 */
 	public void pause()
 	{
-		this.pause(this.frameDelay);
+		this.pause(this.pauseDelay);
 	}
 
 	/**
