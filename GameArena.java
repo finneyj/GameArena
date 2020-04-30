@@ -339,6 +339,8 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 						this.things.add(position, o);
 						added = true;
 					}
+
+					position++;
 				}
 
 				// If there are no items in the list with an equivalent or higher layer, append this object to the end of the list.
