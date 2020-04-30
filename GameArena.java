@@ -27,7 +27,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	private ArrayList<Object> things = new ArrayList<Object>();
 
 	private HashMap<String, Color> colours = new HashMap<>();
-	private Map<Integer, Boolean> keysPressed = new HashMap<>();
+	private Set<Integer> keysPressed = new HashSet<>();
 
 	private boolean leftMouse = false;
 	private boolean rightMouse = false;
@@ -492,7 +492,11 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
  	
 	public void keyAction(KeyEvent e,boolean yn) 
 	{
-		this.keysPressed.put(e.getKeyCode(), yn);
+		if(!yn) {
+			this.keysPressed.remove(e.getKeyCode());
+		}else {
+			this.keysPressed.add(e.getKeyCode());
+		}
 	}
 
 	public void keyReleased(KeyEvent e){
@@ -670,7 +674,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	 * @return True if being pressed, false otherwise.
 	 */
 	private boolean isKeyPressed(Integer keyId) {
-		return this.keysPressed.getOrDefault(keyId, false);
+		return this.keysPressed.contains(keyId);
 	}
 
 	/** 
