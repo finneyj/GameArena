@@ -146,6 +146,8 @@ public class Text
 		this.font = font;
 		this.bold = bold;
 		this.italic = italic;
+
+		this.updateFont();
 	}
 
 	/**
