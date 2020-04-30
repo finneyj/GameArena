@@ -487,7 +487,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	 * 
 	 * @param millis the number of milli-seconds the {@link Thread} is paused for
 	 */
-	public void pause(int millis) {
+	private void pause(int millis) {
 		try { 
 			Thread.sleep(millis); 
 		} catch (Exception ignored) {};
