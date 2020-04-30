@@ -27,18 +27,8 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	private ArrayList<Object> things = new ArrayList<Object>();
 
 	private HashMap<String, Color> colours = new HashMap<>();
+	private Map<Integer, Boolean> keysPressed = new HashMap<>();
 
-	private boolean up = false;
-	private boolean down = false;
-	private boolean left = false;
-	private boolean right = false;
-	private boolean shift = false;
-	private boolean space = false;
-	private boolean esc = false;
-	private boolean enter = false;
-	private boolean x = false;
-	private boolean z = false;
-	private boolean o = false;
 	private boolean leftMouse = false;
 	private boolean rightMouse = false;
 	private int mouseX = 0;
@@ -502,31 +492,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
  	
 	public void keyAction(KeyEvent e,boolean yn) 
 	{
-		int code = e.getKeyCode();
-
-		if (code == KeyEvent.VK_UP) {
-			up = yn;		
-		} else if (code == KeyEvent.VK_DOWN) {
-			down = yn;		
-		} else if (code == KeyEvent.VK_LEFT) {
-			left = yn;		
-		} else if (code == KeyEvent.VK_RIGHT) {
-			right = yn;		
-		} else if (code == KeyEvent.VK_SPACE) {
-			space = yn;
-		} else if (code == KeyEvent.VK_SHIFT) {
-			shift = yn;	
-		} else if (code == KeyEvent.VK_ESCAPE) {
-			esc = yn;		
-		} else if (code == KeyEvent.VK_ENTER) {
-			enter = yn;		
-		} else if (code == KeyEvent.VK_X) {
-			x = yn;		
-		} else if (code == KeyEvent.VK_Z) {
-			z = yn;		
-		} else if (code == KeyEvent.VK_O) {
-			o = yn;		
-		}
+		this.keysPressed.put(e.getKeyCode(), yn);
 	}
 
 	public void keyReleased(KeyEvent e){
@@ -603,7 +569,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	 */
 	public boolean upPressed()
 	{
-		return up;
+		return this.isKeyPressed(KeyEvent.VK_UP);
 	}
 
 	/** 
@@ -612,7 +578,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	 */
 	public boolean downPressed()
 	{
-		return down;
+		return this.isKeyPressed(KeyEvent.VK_DOWN);
 	}
 
 	/** 
@@ -621,7 +587,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	 */
 	public boolean leftPressed()
 	{
-		return left;
+		return this.isKeyPressed(KeyEvent.VK_LEFT);
 	}
 
 	/** 
@@ -630,7 +596,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	 */
 	public boolean rightPressed()
 	{
-		return right;
+		return this.isKeyPressed(KeyEvent.VK_RIGHT);
 	}
 
 	/** 
@@ -639,7 +605,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	 */
 	public boolean spacePressed()
 	{
-		return space;
+		return this.isKeyPressed(KeyEvent.VK_SPACE);
 	}
 
         /** 
@@ -648,7 +614,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	 */
 	public boolean escPressed()
 	{
-		return esc;
+		return this.isKeyPressed(KeyEvent.VK_ESCAPE);
 	}
 
 	/**
@@ -657,7 +623,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	 */
 	public boolean enterPressed()
 	{
-		return enter;
+		return this.isKeyPressed(KeyEvent.VK_ENTER);
 	}
 
 	/** 
@@ -666,7 +632,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	 */
 	public boolean xPressed()
 	{
-		return x;
+		return this.isKeyPressed(KeyEvent.VK_X);
 	}
 
 	/**
@@ -675,7 +641,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	 */
 	public boolean zPressed()
 	{
-		return z;
+		return this.isKeyPressed(KeyEvent.VK_Z);
 	}
 
 	/**
@@ -684,7 +650,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	 */
 	public boolean oPressed()
 	{
-		return o;
+		return this.isKeyPressed(KeyEvent.VK_O);
 	}
 
 	/** 
@@ -693,7 +659,18 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	 */
 	public boolean shiftPressed()
 	{
-		return shift;
+		return this.isKeyPressed(KeyEvent.VK_SHIFT);
+	}
+
+	/**
+	 * 
+	 * Determines if the user is currently pressing the key with identifier {@param keyId}
+	 * 
+	 * @param keyId The identifier of the key being pressed
+	 * @return True if being pressed, false otherwise.
+	 */
+	private boolean isKeyPressed(Integer keyId) {
+		return this.keysPressed.getOrDefault(keyId, false);
 	}
 
 	/** 
