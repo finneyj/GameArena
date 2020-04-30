@@ -5,7 +5,6 @@ import java.awt.image.*;
 import java.awt.event.*;
 import java.util.*;
 import java.lang.Class;
-import java.lang.reflect.*;
 
 /**
  * This class provides a simple window in which grahical objects can be drawn. 
@@ -13,6 +12,11 @@ import java.lang.reflect.*;
  */
 public class GameArena extends JPanel implements Runnable, KeyListener, MouseListener, MouseMotionListener
 {
+	/**
+	 * Generated version identifier for serialization from extending JPanel
+	 */
+	private static final long serialVersionUID = 3785803761386495747L;
+
 	// Size of playarea
 	private JFrame frame;
 	private int arenaWidth;
@@ -115,7 +119,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 		renderingHints.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
 
 		try {
-			Class rh = Class.forName("java.awt.RenderingHints");
+			Class<?> rh = Class.forName("java.awt.RenderingHints");
 			RenderingHints.Key key = (RenderingHints.Key) rh.getField("KEY_RESOLUTION_VARIANT").get(null);
 			Object value = rh.getField("VALUE_RESOLUTION_VARIANT_DPI_FIT").get(null);
 			renderingHints.put(key, value);
