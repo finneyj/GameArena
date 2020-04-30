@@ -256,7 +256,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 					if (o instanceof Text)
 					{
 						Text t = (Text) o;
-						graphics.setFont(new Font("SansSerif", Font.BOLD, t.getSize()));
+						graphics.setFont(t.asFont());
 						graphics.setColor(this.getColourFromString(t.getColour()));
 						graphics.drawString(t.getText(),(float)t.getXPosition(), (float)t.getYPosition());
 					}
