@@ -516,20 +516,20 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 
 	public void mousePressed(MouseEvent e) 
 	{
-		if (e.getButton() == MouseEvent.BUTTON1)
+		if (e.getButton() == MouseEvent.BUTTON1) {
 			this.leftMouse = true;
-
-		if (e.getButton() == MouseEvent.BUTTON3)
+		} else if (e.getButton() == MouseEvent.BUTTON3) {
 			this.rightMouse = true;
+		}
 	}
 
 	public void mouseReleased(MouseEvent e) 
 	{
-		if (e.getButton() == MouseEvent.BUTTON1)
+		if (e.getButton() == MouseEvent.BUTTON1) {
 			this.leftMouse = false;
-
-		if (e.getButton() == MouseEvent.BUTTON3)
+		} else if (e.getButton() == MouseEvent.BUTTON3) {
 			this.rightMouse = false;
+		}
 	}
 
 	public void mouseEntered(MouseEvent e) 
