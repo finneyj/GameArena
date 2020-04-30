@@ -27,6 +27,8 @@ public class Text
 										// BLACK, BLUE, CYAN, DARKGREY, GREY,
 										// GREEN, DARKGREEN, LIGHTGREY, MAGENTA, ORANGE,
 										// PINK, RED, WHITE, YELLOW, BROWN 
+	
+	private Font fontCache;				// Cache as not to create a new object everytime someone gets the font
 
 	/**
 	 * Obtains the position of this text on the X axis.
@@ -202,6 +204,7 @@ public class Text
 	 */
 	public void setFont(String font) {
 		this.font = font;
+		this.updateFont();
 	}
 
 	/**
@@ -222,6 +225,7 @@ public class Text
 	 */
 	public void setBold(boolean bold) {
 		this.bold = bold;
+		this.updateFont();
 	}
 
 	/**
@@ -242,6 +246,7 @@ public class Text
 	 */
 	public void setItalic(boolean italic) {
 		this.italic = italic;
+		this.updateFont();
 	}
 
 	/**
@@ -251,6 +256,15 @@ public class Text
 	 * @return The {@link Font} representation of the Text object details
 	 */
 	public Font asFont() {
+		return this.fontCache;
+	}
+
+	/**
+	 * 
+	 * Used for updating the font object whenever something is changed internally (i.e. bold -> not bold etc.)
+	 * 
+	 */
+	private void updateFont() {
 		int style = Font.PLAIN;
 
 		if(this.bold && this.italic) {
@@ -261,6 +275,6 @@ public class Text
 			style = Font.ITALIC;
 		}
 
-		return new Font(this.font, style, this.size);
+		this.fontCache = new Font(this.font, style, this.size);
 	}
 }
