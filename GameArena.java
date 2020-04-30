@@ -479,28 +479,29 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	{
 		int code = e.getKeyCode();
 
-		if (code == KeyEvent.VK_UP)
+		if (code == KeyEvent.VK_UP) {
 			up = yn;		
-		if (code == KeyEvent.VK_DOWN)
+		} else if (code == KeyEvent.VK_DOWN) {
 			down = yn;		
-		if (code == KeyEvent.VK_LEFT)
+		} else if (code == KeyEvent.VK_LEFT) {
 			left = yn;		
-		if (code == KeyEvent.VK_RIGHT)
+		} else if (code == KeyEvent.VK_RIGHT) {
 			right = yn;		
-		if (code == KeyEvent.VK_SPACE)
+		} else if (code == KeyEvent.VK_SPACE) {
 			space = yn;
-		if (code == KeyEvent.VK_SHIFT)
+		} else if (code == KeyEvent.VK_SHIFT) {
 			shift = yn;	
-		if (code == KeyEvent.VK_ESCAPE)
+		} else if (code == KeyEvent.VK_ESCAPE) {
 			esc = yn;		
-		if (code == KeyEvent.VK_ENTER)
+		} else if (code == KeyEvent.VK_ENTER) {
 			enter = yn;		
-		if (code == KeyEvent.VK_X)
+		} else if (code == KeyEvent.VK_X) {
 			x = yn;		
-		if (code == KeyEvent.VK_Z)
+		} else if (code == KeyEvent.VK_Z) {
 			z = yn;		
-		if (code == KeyEvent.VK_O)
+		} else if (code == KeyEvent.VK_O) {
 			o = yn;		
+		}
 	}
 
 	public void keyReleased(KeyEvent e){
