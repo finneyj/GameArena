@@ -457,7 +457,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	 * 
 	 * @return The millis for which the thread will sleep between each frame
 	 */
-	public int setPauseDelay() {
+	public int getPauseDelay() {
 		return this.pauseDelay;
 	}
 
