@@ -282,22 +282,13 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	// 
 	private Color getColourFromString(String col)
 	{
-		Color c = colours.get(col.toUpperCase());
-
-		if (c == null && col.startsWith("#"))
-		{
+		return colours.computeIfAbsent(col, ___ -> {
 			int r = Integer.valueOf( col.substring( 1, 3 ), 16 );
 			int g = Integer.valueOf( col.substring( 3, 5 ), 16 );
 			int b = Integer.valueOf( col.substring( 5, 7 ), 16 );
 
-			c = new Color(r,g,b);
-			colours.put(col.toUpperCase(), c);
-		}
-
-		if (c == null)
-			c = Color.WHITE;
-
-		return c;
+			return new Color(r, g, b);
+		});
 	}
 
 	/**
