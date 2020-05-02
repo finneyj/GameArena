@@ -48,7 +48,11 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	 */
 	public GameArena(int width, int height)
 	{
-		this.init(width, height, true);
+		this(width, height, true);
+	}
+
+	public GameArena(String title, int width, int height) {
+		this(title, width, height, true);
 	}
 
 	/**
@@ -60,18 +64,22 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	 */
 	public GameArena(int width, int height, boolean createWindow)
 	{
-		this.init(width, height, createWindow);
+		this("Let's Play!", width, height, createWindow);
+	}
+
+	public GameArena(String title, int width, int height, boolean createWindow) {
+		this.init(title, width, height, createWindow);
 	}
 
 	/**
 	 * Internal initialisation method - called by constructor methods.
 	 */
-	private void init(int width, int height, boolean createWindow)
+	private void init(String title, int width, int height, boolean createWindow)
 	{
 		if (createWindow)
 		{
 			this.frame = new JFrame();
-			frame.setTitle("Let's Play!");
+			frame.setTitle(title);
 			frame.setSize(width, height);
 			frame.setResizable(false);
 			frame.setBackground(Color.BLACK);
