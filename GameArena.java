@@ -51,6 +51,14 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 		this(width, height, true);
 	}
 
+	/**
+	 * 
+	 * Create a view of a GameArena.
+	 * 
+	 * @param title The title of the playing area
+	 * @param width The width of the playing area, in pixels.
+	 * @param height The height of the playing area, in pixels.
+	 */
 	public GameArena(String title, int width, int height) {
 		this(title, width, height, true);
 	}
@@ -67,6 +75,15 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 		this("Let's Play!", width, height, createWindow);
 	}
 
+	/**
+	 * 
+	 * Create a view of a GameArena.
+	 * 
+	 * @param title The title of the playing area
+	 * @param width The width of the playing area, in pixels.
+	 * @param height The height of the playing area, in pixels.
+	 * @param createWindow If the {@link JFrame} should be created upon instantiation
+	 */
 	public GameArena(String title, int width, int height, boolean createWindow) {
 		this.init(title, width, height, createWindow);
 	}
