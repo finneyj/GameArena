@@ -463,7 +463,10 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	 * should appear on the GameArena window after this has executed.
 	 */
 	public void clearGameArena() {
-		things.clear();
+		synchronized(this) {
+			things.clear();
+		}
+		
 	}
 
 
