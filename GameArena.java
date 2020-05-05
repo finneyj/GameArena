@@ -466,9 +466,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 		synchronized(this) {
 			things.clear();
 		}
-		
 	}
-
 
 	/**
 	 * Pause for a 1/50 of a second. 
