@@ -468,6 +468,16 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 		this.removeObject(t);
 	}
 
+   /**
+	 * Removes every object that has ever been added to the GameArena. Nothing
+	 * should appear on the GameArena window after this has executed.
+	 */
+	public void clearGameArena() {
+		synchronized(this) {
+			things.clear();
+		}
+	}
+
 	/**
 	 * 
 	 * Gets the number of milliseconds for which the {@link Thread} sleeps between each frame
@@ -490,6 +500,17 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 
 	/**
 	 * Pause for the configured milliseconds using {@link GameArena#setPauseDelay(int)}. 
+	 * Removes every object that has ever been added to the GameArena. Nothing
+	 * should appear on the GameArena window after this has executed.
+	 */
+	public void clearGameArena() {
+		synchronized(this) {
+			things.clear();
+		}
+	}
+
+	/**
+	 * Pause for a 1/50 of a second. 
 	 * This method causes your program to delay for 1/50th of a second. You'll find this useful if you're trying to animate your application.
 	 *
 	 */
