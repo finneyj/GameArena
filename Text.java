@@ -244,7 +244,7 @@ public class Text
 	 * 
 	 * Sets if the text is italicized
 	 * 
-	 * @param bold True if setting to italics, false if unsetting
+	 * @param italic True if setting to italics, false if unsetting
 	 */
 	public void setItalic(boolean italic) {
 		this.italic = italic;
