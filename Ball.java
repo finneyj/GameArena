@@ -118,6 +118,15 @@ public class Ball
 	}
 
 	/**
+	 * Sets the layer of this Ball.
+	 * @param c the new layer of this Ball. Higher layer numbers are drawn on top of low layer numbers.
+	 */
+	public void setLayer(int l)
+	{
+		layer = l;
+	}
+
+	/**
 	 * Obtains the colour of this Ball.
 	 * @return a textual description of the colour of this Ball.
 	 */
