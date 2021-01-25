@@ -119,7 +119,7 @@ public class Ball
 
 	/**
 	 * Sets the layer of this Ball.
-	 * @param c the new layer of this Ball. Higher layer numbers are drawn on top of low layer numbers.
+	 * @param l the new layer of this Ball. Higher layer numbers are drawn on top of low layer numbers.
 	 */
 	public void setLayer(int l)
 	{
