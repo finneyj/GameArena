@@ -5,7 +5,6 @@ import java.awt.image.*;
 import java.awt.event.*;
 import java.util.*;
 import java.lang.Class;
-import java.lang.reflect.*;
 
 /**
  * This class provides a simple window in which grahical objects can be drawn. 
@@ -13,6 +12,11 @@ import java.lang.reflect.*;
  */
 public class GameArena extends JPanel implements Runnable, KeyListener, MouseListener, MouseMotionListener
 {
+	/**
+	 * Generated version identifier for serialization from extending JPanel
+	 */
+	private static final long serialVersionUID = 3785803761386495747L;
+
 	// Size of playarea
 	private JFrame frame;
 	private int arenaWidth;
@@ -23,18 +27,8 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	private ArrayList<Object> things = new ArrayList<Object>();
 
 	private HashMap<String, Color> colours = new HashMap<>();
+	private Set<Integer> keysPressed = new HashSet<>();
 
-	private boolean up = false;
-	private boolean down = false;
-	private boolean left = false;
-	private boolean right = false;
-	private boolean shift = false;
-	private boolean space = false;
-	private boolean esc = false;
-	private boolean enter = false;
-	private boolean x = false;
-	private boolean z = false;
-	private boolean o = false;
 	private boolean leftMouse = false;
 	private boolean rightMouse = false;
 	private int mouseX = 0;
@@ -44,6 +38,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	private Graphics2D graphics;
 	private Map<RenderingHints.Key, Object> renderingHints;
 	private boolean rendered = false;
+	private int pauseDelay = 20;
 
 	/**
 	 * Create a view of a GameArena.
@@ -53,7 +48,19 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	 */
 	public GameArena(int width, int height)
 	{
-		this.init(width, height, true);
+		this(width, height, true);
+	}
+
+	/**
+	 * 
+	 * Create a view of a GameArena.
+	 * 
+	 * @param title The title of the playing area
+	 * @param width The width of the playing area, in pixels.
+	 * @param height The height of the playing area, in pixels.
+	 */
+	public GameArena(String title, int width, int height) {
+		this(title, width, height, true);
 	}
 
 	/**
@@ -65,18 +72,31 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	 */
 	public GameArena(int width, int height, boolean createWindow)
 	{
-		this.init(width, height, createWindow);
+		this("Let's Play!", width, height, createWindow);
+	}
+
+	/**
+	 * 
+	 * Create a view of a GameArena.
+	 * 
+	 * @param title The title of the playing area
+	 * @param width The width of the playing area, in pixels.
+	 * @param height The height of the playing area, in pixels.
+	 * @param createWindow If the {@link JFrame} should be created upon instantiation
+	 */
+	public GameArena(String title, int width, int height, boolean createWindow) {
+		this.init(title, width, height, createWindow);
 	}
 
 	/**
 	 * Internal initialisation method - called by constructor methods.
 	 */
-	private void init(int width, int height, boolean createWindow)
+	private void init(String title, int width, int height, boolean createWindow)
 	{
 		if (createWindow)
 		{
 			this.frame = new JFrame();
-			frame.setTitle("Let's Play!");
+			frame.setTitle(title);
 			frame.setSize(width, height);
 			frame.setResizable(false);
 			frame.setBackground(Color.BLACK);
@@ -115,7 +135,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 		renderingHints.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
 
 		try {
-			Class rh = Class.forName("java.awt.RenderingHints");
+			Class<?> rh = Class.forName("java.awt.RenderingHints");
 			RenderingHints.Key key = (RenderingHints.Key) rh.getField("KEY_RESOLUTION_VARIANT").get(null);
 			Object value = rh.getField("VALUE_RESOLUTION_VARIANT_DPI_FIT").get(null);
 			renderingHints.put(key, value);
@@ -136,7 +156,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 		try {
 			while (!exiting) {
 				this.repaint();
-				Thread.sleep(10);
+				Thread.sleep(this.pauseDelay / 2);
 			}
 		} catch (InterruptedException iex) {}
 
@@ -261,7 +281,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 					if (o instanceof Text)
 					{
 						Text t = (Text) o;
-						graphics.setFont(new Font("SansSerif", Font.BOLD, t.getSize()));
+						graphics.setFont(t.asFont());
 						graphics.setColor(this.getColourFromString(t.getColour()));
 						graphics.drawString(t.getText(),(float)t.getXPosition(), (float)t.getYPosition());
 					}
@@ -278,22 +298,13 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	// 
 	private Color getColourFromString(String col)
 	{
-		Color c = colours.get(col.toUpperCase());
-
-		if (c == null && col.startsWith("#"))
-		{
+		return colours.computeIfAbsent(col.toUpperCase(), ___ -> {
 			int r = Integer.valueOf( col.substring( 1, 3 ), 16 );
 			int g = Integer.valueOf( col.substring( 3, 5 ), 16 );
 			int b = Integer.valueOf( col.substring( 5, 7 ), 16 );
 
-			c = new Color(r,g,b);
-			colours.put(col.toUpperCase(), c);
-		}
-
-		if (c == null)
-			c = Color.WHITE;
-
-		return c;
+			return new Color(r, g, b);
+		});
 	}
 
 	/**
@@ -303,10 +314,9 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	 */
 	private void addThing(Object o, int layer)
 	{
-		boolean added = false;
-
-		if (exiting)
+		if (exiting) {
 			return;
+		}
 
 		synchronized (this)
 		{
@@ -323,35 +333,35 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 			}
 			else
 			{
-				// Try to insert this object into the list.
-				for (int i=0; i<things.size(); i++)
-				{
-					int l = 0;
-					Object obj = things.get(i);
+				boolean added = false;
+				int position = 0;
 
-					if (obj instanceof Ball)
-						l = ((Ball)obj).getLayer();
+				while(!added && position < this.things.size()) {
+					Object thing = this.things.get(position);
+					int thingLayer = 0;
 
-					if (obj instanceof Rectangle)
-						l = ((Rectangle)obj).getLayer();
-
-					if (obj instanceof Line)
-						l = ((Line)obj).getLayer();
-
-					if (obj instanceof Text)
-						l = ((Text)obj).getLayer();
-
-					if (layer < l)
-					{
-						things.add(i,o);
-						added = true;
-						break;
+					if (thing instanceof Ball) {
+						thingLayer = ((Ball) thing).getLayer();
+					} else if (thing instanceof Rectangle) {
+						thingLayer = ((Rectangle) thing).getLayer();
+					} else if (thing instanceof Line) {
+						thingLayer = ((Line) thing).getLayer();
+					} else if (thing instanceof Text) {
+						thingLayer = ((Text) thing).getLayer();
 					}
+
+					if(layer < thingLayer) {
+						this.things.add(position, o);
+						added = true;
+					}
+
+					position++;
 				}
 
 				// If there are no items in the list with an equivalent or higher layer, append this object to the end of the list.
-				if (!added)
+				if (!added) {
 					things.add(o);
+				}
 			}
 		}
 	}
@@ -458,7 +468,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 		this.removeObject(t);
 	}
 
-	/**
+   /**
 	 * Removes every object that has ever been added to the GameArena. Nothing
 	 * should appear on the GameArena window after this has executed.
 	 */
@@ -469,14 +479,45 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	}
 
 	/**
-	 * Pause for a 1/50 of a second. 
-	 * This method causes your program to delay for 1/50th of a second. You'll find this useful if you're trying to animate your application.
-	 *
+	 * 
+	 * Gets the number of milliseconds for which the {@link Thread} sleeps between each frame
+	 * 
+	 * @return The milliseconds for which the thread will sleep between each frame
+	 */
+	public int getPauseDelay() {
+		return this.pauseDelay;
+	}
+
+	/**
+	 * 
+	 * Sets the milliseconds that the default {@link GameArena#pause()} method sleeps the {@link Thread} for
+	 * 
+	 * @param pauseDelay The time in milliseconds for which the {@link Thread} will sleep
+	 */
+	public void setPauseDelay(int pauseDelay) {
+		this.pauseDelay = pauseDelay;
+	}
+
+	/**
+	 * Pause for the configured milliseconds using {@link GameArena#setPauseDelay(int)}. 
+	 * Removes every object that has ever been added to the GameArena. Nothing
+	 * should appear on the GameArena window after this has executed.
 	 */
 	public void pause()
 	{
-		try { Thread.sleep(20); }
-		catch (Exception e) {};
+		this.pause(this.pauseDelay);
+	}
+
+	/**
+	 * 
+	 * Pause the {@link Thread} for {@param milliseconds} milliseconds
+	 * 
+	 * @param milliseconds the number of milliseconds the {@link Thread} is paused for
+	 */
+	private void pause(int milliseconds) {
+		try { 
+			Thread.sleep(milliseconds); 
+		} catch (Exception ignored) {};
 	}
 
  	public void keyPressed(KeyEvent e) 
@@ -486,30 +527,11 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
  	
 	public void keyAction(KeyEvent e,boolean yn) 
 	{
-		int code = e.getKeyCode();
-
-		if (code == KeyEvent.VK_UP)
-			up = yn;		
-		if (code == KeyEvent.VK_DOWN)
-			down = yn;		
-		if (code == KeyEvent.VK_LEFT)
-			left = yn;		
-		if (code == KeyEvent.VK_RIGHT)
-			right = yn;		
-		if (code == KeyEvent.VK_SPACE)
-			space = yn;
-		if (code == KeyEvent.VK_SHIFT)
-			shift = yn;	
-		if (code == KeyEvent.VK_ESCAPE)
-			esc = yn;		
-		if (code == KeyEvent.VK_ENTER)
-			enter = yn;		
-		if (code == KeyEvent.VK_X)
-			x = yn;		
-		if (code == KeyEvent.VK_Z)
-			z = yn;		
-		if (code == KeyEvent.VK_O)
-			o = yn;		
+		if(!yn) {
+			this.keysPressed.remove(e.getKeyCode());
+		}else {
+			this.keysPressed.add(e.getKeyCode());
+		}
 	}
 
 	public void keyReleased(KeyEvent e){
@@ -524,20 +546,20 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 
 	public void mousePressed(MouseEvent e) 
 	{
-		if (e.getButton() == MouseEvent.BUTTON1)
+		if (e.getButton() == MouseEvent.BUTTON1) {
 			this.leftMouse = true;
-
-		if (e.getButton() == MouseEvent.BUTTON3)
+		} else if (e.getButton() == MouseEvent.BUTTON3) {
 			this.rightMouse = true;
+		}
 	}
 
 	public void mouseReleased(MouseEvent e) 
 	{
-		if (e.getButton() == MouseEvent.BUTTON1)
+		if (e.getButton() == MouseEvent.BUTTON1) {
 			this.leftMouse = false;
-
-		if (e.getButton() == MouseEvent.BUTTON3)
+		} else if (e.getButton() == MouseEvent.BUTTON3) {
 			this.rightMouse = false;
+		}
 	}
 
 	public void mouseEntered(MouseEvent e) 
@@ -586,7 +608,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	 */
 	public boolean upPressed()
 	{
-		return up;
+		return this.isKeyPressed(KeyEvent.VK_UP);
 	}
 
 	/** 
@@ -595,7 +617,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	 */
 	public boolean downPressed()
 	{
-		return down;
+		return this.isKeyPressed(KeyEvent.VK_DOWN);
 	}
 
 	/** 
@@ -604,7 +626,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	 */
 	public boolean leftPressed()
 	{
-		return left;
+		return this.isKeyPressed(KeyEvent.VK_LEFT);
 	}
 
 	/** 
@@ -613,7 +635,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	 */
 	public boolean rightPressed()
 	{
-		return right;
+		return this.isKeyPressed(KeyEvent.VK_RIGHT);
 	}
 
 	/** 
@@ -622,7 +644,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	 */
 	public boolean spacePressed()
 	{
-		return space;
+		return this.isKeyPressed(KeyEvent.VK_SPACE);
 	}
 
         /** 
@@ -631,7 +653,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	 */
 	public boolean escPressed()
 	{
-		return esc;
+		return this.isKeyPressed(KeyEvent.VK_ESCAPE);
 	}
 
 	/**
@@ -640,7 +662,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	 */
 	public boolean enterPressed()
 	{
-		return enter;
+		return this.isKeyPressed(KeyEvent.VK_ENTER);
 	}
 
 	/** 
@@ -649,7 +671,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	 */
 	public boolean xPressed()
 	{
-		return x;
+		return this.isKeyPressed(KeyEvent.VK_X);
 	}
 
 	/**
@@ -658,7 +680,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	 */
 	public boolean zPressed()
 	{
-		return z;
+		return this.isKeyPressed(KeyEvent.VK_Z);
 	}
 
 	/**
@@ -667,7 +689,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	 */
 	public boolean oPressed()
 	{
-		return o;
+		return this.isKeyPressed(KeyEvent.VK_O);
 	}
 
 	/** 
@@ -676,7 +698,18 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	 */
 	public boolean shiftPressed()
 	{
-		return shift;
+		return this.isKeyPressed(KeyEvent.VK_SHIFT);
+	}
+
+	/**
+	 * 
+	 * Determines if the user is currently pressing the key with identifier {@param keyId}
+	 * 
+	 * @param keyId The identifier of the key being pressed
+	 * @return True if being pressed, false otherwise.
+	 */
+	private boolean isKeyPressed(Integer keyId) {
+		return this.keysPressed.contains(keyId);
 	}
 
 	/** 
