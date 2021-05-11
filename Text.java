@@ -1,3 +1,5 @@
+import java.awt.*;
+
 /**
  * Models a simple piece of text. 
  * This class represents a Text object. When combined with the GameArena class,
@@ -163,5 +165,17 @@ public class Text
 	{
 		this.yPosition = y;
 	}
-
+	
+	/**
+	 * 
+	 * Draws the {@link Text} on the canvas
+	 * 
+	 * @param graphics The canvas being drawn on
+	 * @param gameArena The game arena from which the {@link Text} originiates
+	 */	
+	public void draw(Graphics2D graphics, GameArena gameArena) {
+		graphics.setFont(new Font("SansSerif", Font.BOLD, this.getSize()));
+		graphics.setColor(gameArena.getColourFromString(this.getColour()));
+		graphics.drawString(this.getText(), (float) this.getXPosition(), (float) this.getYPosition());
+	}
 }

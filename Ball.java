@@ -1,3 +1,5 @@
+import java.awt.*;
+
 /**
  * Models a simple solid sphere. 
  * This class represents a Ball object. When combined with the GameArena class,
@@ -169,5 +171,17 @@ public class Ball
 		double distance = Math.sqrt(dx*dx+dy*dy);
 
 		return distance < size/2 + b.size/2;
+	}
+
+	/**
+	 * 
+	 * Draws the {@link Ball} on the canvas
+	 * 
+	 * @param graphics The canvas being drawn on
+	 * @param gameArena The game arena from which the {@link Ball} originiates
+	 */
+	public void draw(Graphics2D graphics, GameArena gameArena) {
+		graphics.setColor(gameArena.getColourFromString(this.getColour()));
+		graphics.fillOval((int) (this.getXPosition() - (this.getSize() / 2)), (int) (this.getYPosition() - (this.getSize() / 2)), (int) this.getSize(), (int) this.getSize());
 	}
 }
