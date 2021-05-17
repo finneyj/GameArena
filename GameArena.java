@@ -44,6 +44,7 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	private Graphics2D graphics;
 	private Map<RenderingHints.Key, Object> renderingHints;
 	private boolean rendered = false;
+	private Image backgroundImage = null;
 
 	/**
 	 * Create a view of a GameArena.
@@ -164,6 +165,18 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	}	
 
 	/**
+	 * Set the background of the GameArena window to the specified image file.
+	 * The image will be scaled to fit the size of the GameArena
+	 *
+	 * @param filename the filename of an image to use.
+	 */
+	public void setBackgroundImage(String filename)
+	{
+		Toolkit t=Toolkit.getDefaultToolkit();
+		backgroundImage = t.getImage(filename);
+	}
+
+	/**
 	 * Retrieves the JPanel on which this gameArena is drawn, so that it can be integrated into
 	 * a users application. 
 	 * 
@@ -220,6 +233,9 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 			if (!this.exiting)
 			{
 				graphics.clearRect(0,0, arenaWidth, arenaHeight);
+
+				if (backgroundImage != null)
+					graphics.drawImage(backgroundImage, 0, 0, arenaWidth, arenaHeight, 0, 0, backgroundImage.getWidth(null), backgroundImage.getHeight(null), null);
 
 				for (Object o : things)
 				{
