@@ -576,6 +576,8 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 
 	public void mouseDragged(MouseEvent e) 
 	{
+		mouseX = e.getX();	
+		mouseY = e.getY();
 	}
 
 	/** 
