@@ -1,1 +1,1 @@
-typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"<Unnamed>","l":"Ball"},{"p":"<Unnamed>","l":"GameArena"},{"p":"<Unnamed>","l":"Line"},{"p":"<Unnamed>","l":"Rectangle"},{"p":"<Unnamed>","l":"Text"}]
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"<Unnamed>","l":"Ball"},{"p":"<Unnamed>","l":"GameArena"},{"p":"<Unnamed>","l":"Line"},{"p":"<Unnamed>","l":"Rectangle"},{"p":"<Unnamed>","l":"Text"}];updateSearchResults();
