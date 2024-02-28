@@ -164,6 +164,31 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 
 	}
 
+    /**
+    * Sets the operation that occurs when the user
+    * initiates a "close" on this frame.
+    * from the swing.JFrame class
+	* 
+	* @param oepration the operation which should be performed when the
+    *        user closes the frame
+    */
+	public void setDefaultCloseOperation(int operation)
+	{
+		frame.setDefaultCloseOperation(operation);
+	}
+
+    /**
+    * Returns the operation that occurs when the user
+    * initiates a "close" on this frame.
+    * from the swing.JFrame class
+	* 
+    * @return an integer indicating the window-close operation
+    */
+	public int getDefaultCloseOperation()
+	{
+		return frame.getDefaultCloseOperation();
+	}
+
 	/**
 	 * Set the background of the GameArena window to the specified image file.
 	 * The image will be scaled to fit the size of the GameArena
